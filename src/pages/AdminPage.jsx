@@ -12,11 +12,6 @@ export const AdminPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [qrModalShipment, setQrModalShipment] = useState(null);
 
-  const handleEdit = (s) => {
-    setSelectedShipment(s);
-    setIsModalOpen(true);
-  };
-
   const handleShowQR = (s) => {
     setQrModalShipment(s);
   };
@@ -27,7 +22,7 @@ export const AdminPage = () => {
       <div style={{ marginBottom: '1.75rem' }}>
         <h1 style={{ fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#0f172a' }}>운송현황관리</h1>
         <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-          전체 선적 건의 현황, 진행률 및 운송 상태를 통합 관리합니다.
+          전체 선적 건의 현황, 출항일 기준 진행률 및 운송 상태를 통합 관리합니다.
         </p>
       </div>
 
@@ -35,14 +30,16 @@ export const AdminPage = () => {
       <StatsOverview shipments={shipments} notifications={notifications} />
 
       {/* Shipment Table */}
-      <ShipmentTable onEdit={handleEdit} onShowQR={handleShowQR} />
+      <ShipmentTable onShowQR={handleShowQR} />
 
       {/* Edit Shipment Modal */}
-      <ShipmentModal 
-        shipment={selectedShipment}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      {isModalOpen && (
+        <ShipmentModal 
+          shipment={selectedShipment}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
 
       {/* QR Code Modal */}
       {qrModalShipment && (

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { QrCode, Edit, Trash2, CheckCircle2, Clock, AlertTriangle, MapPin } from 'lucide-react';
+import { QrCode, CheckCircle2, Clock, AlertTriangle, MapPin, Calendar, ArrowUpDown } from 'lucide-react';
 import { useShipments } from '../../context/ShipmentContext';
 
-export const ShipmentTable = ({ onEdit, onShowQR }) => {
-  const { shipments, user, deleteShipment } = useShipments();
+export const ShipmentTable = ({ onShowQR }) => {
+  const { shipments, user } = useShipments();
   const [filter, setFilter] = useState('ALL');
+  const [sortAsc, setSortAsc] = useState(true);
   const navigate = useNavigate();
 
   // Filter shipments by customer_id (e.g. CUST001)
@@ -16,7 +17,14 @@ export const ShipmentTable = ({ onEdit, onShowQR }) => {
     return s.customer_id.toUpperCase() === currentCustomerId.toUpperCase();
   });
 
-  const filtered = customerShipments.filter(s => {
+  // Sort by departure_date (출항일 기준 정렬)
+  const sortedShipments = [...customerShipments].sort((a, b) => {
+    const dateA = new Date(a.departure_date || '2026-07-01');
+    const dateB = new Date(b.departure_date || '2026-07-01');
+    return sortAsc ? dateA - dateB : dateB - dateA;
+  });
+
+  const filtered = sortedShipments.filter(s => {
     if (filter === 'ALL') return true;
     return s.status === filter;
   });
@@ -31,23 +39,47 @@ export const ShipmentTable = ({ onEdit, onShowQR }) => {
         <div>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 700 }}>선적 현황 및 진행률 관리</h2>
           <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.1rem' }}>
-            고객사: <strong style={{ color: '#0284c7' }}>{user?.customer_name || '(주) 한진글로벌물류'} ({currentCustomerId})</strong> • 총 <strong style={{ color: '#2563eb' }}>{customerShipments.length}건</strong>의 선적 정보
+            고객사: <strong style={{ color: '#0284c7' }}>{user?.customer_name || '(주) 한진글로벌물류'} ({currentCustomerId})</strong> • 총 <strong style={{ color: '#2563eb' }}>{customerShipments.length}건</strong>의 선적 정보 (출항일 순 정렬 중)
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>상태 필터:</span>
-          <select 
-            className="form-control" 
-            value={filter} 
-            onChange={(e) => setFilter(e.target.value)}
-            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+          {/* Sort Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setSortAsc(!sortAsc)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              background: '#f1f5f9',
+              border: '1px solid #cbd5e1',
+              padding: '0.4rem 0.8rem',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '0.82rem',
+              fontWeight: 700,
+              color: '#334155',
+              cursor: 'pointer'
+            }}
           >
-            <option value="ALL">전체 보기 ({customerShipments.length})</option>
-            <option value="IN_TRANSIT">운송 중</option>
-            <option value="DELAYED">일정 지연</option>
-            <option value="COMPLETED">운송 완료</option>
-          </select>
+            <ArrowUpDown className="w-3.5 h-3.5 text-blue-600" />
+            <span>출항일 정렬 ({sortAsc ? '오름차순 ⬆️' : '내림차순 ⬇️'})</span>
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>상태 필터:</span>
+            <select 
+              className="form-control" 
+              value={filter} 
+              onChange={(e) => setFilter(e.target.value)}
+              style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}
+            >
+              <option value="ALL">전체 보기 ({customerShipments.length})</option>
+              <option value="IN_TRANSIT">운송 중</option>
+              <option value="DELAYED">일정 지연</option>
+              <option value="COMPLETED">운송 완료</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -58,6 +90,13 @@ export const ShipmentTable = ({ onEdit, onShowQR }) => {
               <th>선적 번호 (클릭 시 지도 이동)</th>
               <th>경로 / 운송 수단</th>
               <th>진행률 (%)</th>
+              {/* Section A: New Column '출항일 (ETD)' */}
+              <th style={{ color: '#0284c7', background: '#f0f9ff' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <Calendar className="w-3.5 h-3.5 text-blue-600" />
+                  <span>출항일 (ETD)</span>
+                </div>
+              </th>
               <th>예상 도착일 (ETA)</th>
               <th>상태</th>
               <th>수신자 연락처</th>
@@ -67,14 +106,14 @@ export const ShipmentTable = ({ onEdit, onShowQR }) => {
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>
+                <td colSpan="8" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>
                   등록된 선적 정보가 없습니다.
                 </td>
               </tr>
             ) : (
               filtered.map(s => (
                 <tr key={s.id}>
-                  {/* ONLY THIS CELL (선적 번호 셀만) triggers map navigation */}
+                  {/* Tracking Number Cell */}
                   <td 
                     className="mono" 
                     onClick={() => handleTrackingClick(s)}
@@ -98,6 +137,12 @@ export const ShipmentTable = ({ onEdit, onShowQR }) => {
                       <span className="mono" style={{ fontSize: '0.8rem', fontWeight: 700 }}>{s.progress_pct}%</span>
                     </div>
                   </td>
+
+                  {/* Section A: Departure Date Cell (출항일) */}
+                  <td className="mono" style={{ fontWeight: 700, color: '#0369a1', background: '#f0f9ff' }}>
+                    {s.departure_date || '2026-07-28'}
+                  </td>
+
                   <td>
                     {s.original_eta !== s.current_eta ? (
                       <div style={{ fontSize: '0.8rem' }}>
@@ -119,18 +164,12 @@ export const ShipmentTable = ({ onEdit, onShowQR }) => {
                   <td>
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{s.recipient_email || '-'}</div>
                   </td>
+
+                  {/* Section B Removed: Only 'QR/링크' button remains, '수정' and '삭제' buttons deleted */}
                   <td>
-                    <div style={{ display: 'flex', gap: '0.4rem' }}>
-                      <button className="btn-secondary" style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }} onClick={() => onShowQR(s)}>
-                        <QrCode className="w-3.5 h-3.5" /> QR/링크
-                      </button>
-                      <button className="btn-secondary" style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }} onClick={() => onEdit(s)}>
-                        <Edit className="w-3.5 h-3.5" /> 수정
-                      </button>
-                      <button className="btn-danger" style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }} onClick={() => deleteShipment(s.id)}>
-                        <Trash2 className="w-3.5 h-3.5" /> 삭제
-                      </button>
-                    </div>
+                    <button className="btn-secondary" style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }} onClick={() => onShowQR(s)}>
+                      <QrCode className="w-3.5 h-3.5" /> QR/링크
+                    </button>
                   </td>
                 </tr>
               ))
