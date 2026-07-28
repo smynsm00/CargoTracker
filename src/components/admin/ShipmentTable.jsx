@@ -141,15 +141,18 @@ export const ShipmentTable = ({ onShowQR }) => {
                     {s.departure_date || '2026-07-28'}
                   </td>
 
+                  {/* Section A: Multi-line ETA with line break (단락 내려서 표시) */}
                   <td>
                     {s.original_eta !== s.current_eta ? (
-                      <div style={{ fontSize: '0.8rem' }}>
-                        <span style={{ textDecoration: 'line-through', color: 'var(--text-dim)' }}>{s.original_eta}</span> ➔ <span style={{ color: 'var(--status-danger)', fontWeight: 700 }}>{s.current_eta}</span>
+                      <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                        <span style={{ textDecoration: 'line-through', color: 'var(--text-dim)' }}>{s.original_eta}</span>
+                        <span style={{ color: 'var(--status-danger)', fontWeight: 700 }}>➔ {s.current_eta}</span>
                       </div>
                     ) : (
-                      <div>{s.current_eta}</div>
+                      <div style={{ fontSize: '0.85rem' }}>{s.current_eta}</div>
                     )}
                   </td>
+
                   <td>
                     {s.status === 'COMPLETED' ? (
                       <span className="badge badge-completed"><CheckCircle2 className="w-3 h-3" /> 운송 완료</span>
@@ -159,8 +162,6 @@ export const ShipmentTable = ({ onShowQR }) => {
                       <span className="badge badge-in-transit"><Clock className="w-3 h-3" /> 운송 중</span>
                     )}
                   </td>
-
-                  {/* Note: '수신자 연락처' column removed as requested */}
 
                   <td>
                     <button className="btn-secondary" style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }} onClick={() => onShowQR(s)}>
