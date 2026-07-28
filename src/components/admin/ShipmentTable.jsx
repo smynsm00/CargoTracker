@@ -84,21 +84,22 @@ export const ShipmentTable = ({ onShowQR }) => {
       </div>
 
       <div className="table-responsive">
-        <table className="data-table">
+        <table className="data-table" style={{ width: '100%' }}>
           <thead>
             <tr>
-              <th>선적 번호 (클릭 시 지도 이동)</th>
-              <th>경로 / 운송 수단</th>
-              <th>진행률 (%)</th>
-              <th style={{ color: '#0284c7', background: '#f0f9ff' }}>
+              <th style={{ minWidth: '160px' }}>선적 번호 (클릭 시 지도 이동)</th>
+              <th style={{ minWidth: '220px' }}>경로 / 운송 수단</th>
+              <th style={{ minWidth: '130px' }}>진행률 (%)</th>
+              <th style={{ color: '#0284c7', background: '#f0f9ff', minWidth: '120px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <Calendar className="w-3.5 h-3.5 text-blue-600" />
                   <span>출항일 (ETD)</span>
                 </div>
               </th>
-              <th>예상 도착일 (ETA)</th>
-              <th>상태</th>
-              <th>작업</th>
+              <th style={{ minWidth: '130px' }}>예상 도착일 (ETA)</th>
+              <th style={{ minWidth: '110px' }}>상태</th>
+              {/* Section B: Shrunken Icon-only Column */}
+              <th style={{ width: '50px', textAlign: 'center' }}></th>
             </tr>
           </thead>
           <tbody>
@@ -141,7 +142,7 @@ export const ShipmentTable = ({ onShowQR }) => {
                     {s.departure_date || '2026-07-28'}
                   </td>
 
-                  {/* Section A: Multi-line ETA with line break (단락 내려서 표시) */}
+                  {/* Multi-line ETA */}
                   <td>
                     {s.original_eta !== s.current_eta ? (
                       <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
@@ -163,9 +164,15 @@ export const ShipmentTable = ({ onShowQR }) => {
                     )}
                   </td>
 
-                  <td>
-                    <button className="btn-secondary" style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }} onClick={() => onShowQR(s)}>
-                      <QrCode className="w-3.5 h-3.5" /> QR/링크
+                  {/* Section B: Text removed & Column width shrunk to 50px (아이콘 전용 콤팩트 버튼) */}
+                  <td style={{ width: '50px', textAlign: 'center' }}>
+                    <button 
+                      className="btn-secondary" 
+                      style={{ padding: '0.35rem 0.45rem', borderRadius: 'var(--radius-sm)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} 
+                      onClick={() => onShowQR(s)}
+                      title="QR 코드 및 보안 추적 링크 보기"
+                    >
+                      <QrCode className="w-4 h-4 text-blue-600" />
                     </button>
                   </td>
                 </tr>
