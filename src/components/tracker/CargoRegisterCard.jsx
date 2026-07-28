@@ -141,105 +141,168 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
       boxSizing: 'border-box', 
       overflow: 'hidden' 
     }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '0.45rem', height: '100%' }}>
-        
-        {/* 1 & 2. Cargo ID & Transport Mode */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', height: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+          
+          {/* 1 & 2. Cargo ID & Transport Mode */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
+                <Tag className="w-3.5 h-3.5 text-amber-600" />
+                <span>화물 번호 (Cargo ID)</span>
+              </label>
+              <input 
+                type="text" 
+                className="form-control mono" 
+                placeholder="예: COSU62918847"
+                value={formData.cargo_id}
+                onChange={e => setFormData({ ...formData, cargo_id: e.target.value })}
+                style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
+                required
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
+                <Rocket className="w-3.5 h-3.5 text-blue-600" />
+                <span>운송 수단</span>
+              </label>
+              <select 
+                className="form-control" 
+                value={formData.transport_mode}
+                onChange={e => setFormData({ ...formData, transport_mode: e.target.value })}
+                style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
+                required
+              >
+                <option value="SEA">🚢 해상 (Sea)</option>
+                <option value="AIR">✈️ 항공 (Air)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* 3 & 4. Origin & Destination */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
+                <MapPin className="w-3.5 h-3.5 text-rose-600" />
+                <span>출발지 (Origin)</span>
+              </label>
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder="예: Shanghai (CNSHA)"
+                value={formData.origin}
+                onChange={e => setFormData({ ...formData, origin: e.target.value })}
+                style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
+                required
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
+                <Flag className="w-3.5 h-3.5 text-indigo-600" />
+                <span>목적지 (Destination)</span>
+              </label>
+              <input 
+                type="text" 
+                className="form-control" 
+                placeholder="예: Busan (KRPUS)"
+                value={formData.destination}
+                onChange={e => setFormData({ ...formData, destination: e.target.value })}
+                style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
+                required
+              />
+            </div>
+          </div>
+
+          {/* 5. Original ETA */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
-              <Tag className="w-3.5 h-3.5 text-amber-600" />
-              <span>화물 번호 (Cargo ID)</span>
+              <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+              <span>최초 예상 도착일 (Original ETA)</span>
             </label>
             <input 
-              type="text" 
-              className="form-control mono" 
-              placeholder="예: COSU62918847"
-              value={formData.cargo_id}
-              onChange={e => setFormData({ ...formData, cargo_id: e.target.value })}
+              type="date" 
+              className="form-control" 
+              value={formData.original_eta}
+              onChange={e => setFormData({ ...formData, original_eta: e.target.value })}
               style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
               required
             />
           </div>
 
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
-              <Rocket className="w-3.5 h-3.5 text-blue-600" />
-              <span>운송 수단</span>
-            </label>
-            <select 
-              className="form-control" 
-              value={formData.transport_mode}
-              onChange={e => setFormData({ ...formData, transport_mode: e.target.value })}
-              style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
-              required
-            >
-              <option value="SEA">🚢 해상 (Sea)</option>
-              <option value="AIR">✈️ 항공 (Air)</option>
-            </select>
+          {/* AI Delay Reason Analysis Yellow Box */}
+          <div style={{ background: '#fffbe6', border: '1px solid #fef08a', borderRadius: 'var(--radius-md)', padding: '0.55rem 0.65rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#b45309' }}>
+                  지연 사유 분석 및 위험상황 안내
+                </span>
+              </div>
+              <span className="badge" style={{ background: '#fef3c7', color: '#d97706', fontSize: '0.65rem', padding: '0.1rem 0.35rem' }}>
+                AI 분석 완료
+              </span>
+            </div>
+
+            <div style={{ background: '#ffffff', border: '1px solid #fde68a', borderRadius: 'var(--radius-sm)', padding: '0.45rem 0.6rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#92400e', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <Activity className="w-3 h-3 text-amber-600" />
+                  실시간 항만 정체 & ETA 지연 분석 (API 연동)
+                </div>
+                <div style={{ fontSize: '0.6rem', color: '#0369a1', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                  <Key className="w-2.5 h-2.5" /> Marine Key
+                </div>
+              </div>
+
+              {/* Port Congestion % & Vessel Real-Time ETA */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', fontSize: '0.68rem', color: '#334155' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <Anchor className="w-3 h-3 text-blue-600" /> 1. 항만 입항 정체 (Port Congestion)
+                  </span>
+                  <strong style={{ color: '#d97706' }}>{portCongestionPct}%</strong>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <Calendar className="w-3 h-3 text-rose-600" /> 2. 정체 반영 Vessel ETA
+                  </span>
+                  <strong style={{ color: '#e11d48' }}>{vesselRealtimeEta}</strong>
+                </div>
+
+                {/* Open-Meteo Free Forecast API Live Weather Data */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.15rem', marginTop: '0.15rem', borderTop: '1px dashed #fef08a' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#0284c7', fontWeight: 700 }}>
+                    <CloudSun className="w-3 h-3 text-sky-600" /> Open-Meteo ({destCityName} 날씨):
+                  </span>
+                  <strong style={{ color: '#0369a1', fontSize: '0.65rem' }}>
+                    {isWeatherLoading ? '조회 중...' : (
+                      weatherData ? `${weatherData.temperature}°C / 풍속 ${weatherData.windspeed}km/h (${getWeatherDescription(weatherData.weathercode)})` : '실시간 기상 수신 완료'
+                    )}
+                  </strong>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '0.3rem', paddingTop: '0.25rem', borderTop: '1px solid #fef08a', fontSize: '0.65rem', color: '#78350f', lineHeight: 1.25 }}>
+                💡 <strong>AI 종합 진단</strong>: {formData.origin.split(' ')[0]} ➔ {formData.destination.split(' ')[0]} 항로에서 Marine API 항만 정체({portCongestionPct}%) 및 Open-Meteo 실시간 기상이 반영되어 ETA가 <strong>{vesselRealtimeEta}</strong>로 산출되었습니다.
+              </div>
+            </div>
           </div>
+
         </div>
 
-        {/* 3 & 4. Origin & Destination */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
-              <MapPin className="w-3.5 h-3.5 text-rose-600" />
-              <span>출발지 (Origin)</span>
-            </label>
-            <input 
-              type="text" 
-              className="form-control" 
-              placeholder="예: Shanghai (CNSHA)"
-              value={formData.origin}
-              onChange={e => setFormData({ ...formData, origin: e.target.value })}
-              style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
-              required
-            />
-          </div>
-
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
-              <Flag className="w-3.5 h-3.5 text-indigo-600" />
-              <span>목적지 (Destination)</span>
-            </label>
-            <input 
-              type="text" 
-              className="form-control" 
-              placeholder="예: Busan (KRPUS)"
-              value={formData.destination}
-              onChange={e => setFormData({ ...formData, destination: e.target.value })}
-              style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
-              required
-            />
-          </div>
-        </div>
-
-        {/* 5. Original ETA */}
-        <div className="form-group" style={{ marginBottom: 0 }}>
-          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
-            <Calendar className="w-3.5 h-3.5 text-emerald-600" />
-            <span>최초 예상 도착일 (Original ETA)</span>
-          </label>
-          <input 
-            type="date" 
-            className="form-control" 
-            value={formData.original_eta}
-            onChange={e => setFormData({ ...formData, original_eta: e.target.value })}
-            style={{ padding: '0.35rem 0.55rem', fontSize: '0.8rem' }}
-            required
-          />
-        </div>
-
-        {/* Section A Button Moved UP (위로 배치 및 여백 조정) */}
-        <div style={{ margin: '0.2rem 0 0.15rem 0' }}>
+        {/* Button Moved Back DOWN to Position A (yellow box 아래로 배치) */}
+        <div style={{ marginTop: '0.4rem', paddingTop: '0.3rem' }}>
           <button 
             type="submit" 
             className="btn-primary" 
             style={{ 
               width: '100%', 
               justify: 'center', 
-              padding: '0.6rem 1rem', 
-              fontSize: '0.88rem', 
+              padding: '0.65rem 1rem', 
+              fontSize: '0.9rem', 
               fontWeight: 800, 
               borderRadius: 'var(--radius-md)', 
               boxShadow: '0 4px 14px rgba(37, 99, 235, 0.25)', 
@@ -250,67 +313,6 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
             선적 정보 업데이트 및 저장
           </button>
         </div>
-
-        {/* AI Delay Reason Analysis Yellow Box (Now below the Save Button) */}
-        <div style={{ background: '#fffbe6', border: '1px solid #fef08a', borderRadius: 'var(--radius-md)', padding: '0.55rem 0.65rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#b45309' }}>
-                지연 사유 분석 및 위험상황 안내
-              </span>
-            </div>
-            <span className="badge" style={{ background: '#fef3c7', color: '#d97706', fontSize: '0.65rem', padding: '0.1rem 0.35rem' }}>
-              AI 분석 완료
-            </span>
-          </div>
-
-          <div style={{ background: '#ffffff', border: '1px solid #fde68a', borderRadius: 'var(--radius-sm)', padding: '0.45rem 0.6rem' }}>
-            <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#92400e', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <Activity className="w-3 h-3 text-amber-600" />
-                실시간 항만 정체 & ETA 지연 분석 (API 연동)
-              </div>
-              <div style={{ fontSize: '0.6rem', color: '#0369a1', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                <Key className="w-2.5 h-2.5" /> Marine Key
-              </div>
-            </div>
-
-            {/* Port Congestion % & Vessel Real-Time ETA */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', fontSize: '0.68rem', color: '#334155' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <Anchor className="w-3 h-3 text-blue-600" /> 1. 항만 입항 정체 (Port Congestion)
-                </span>
-                <strong style={{ color: '#d97706' }}>{portCongestionPct}%</strong>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  <Calendar className="w-3 h-3 text-rose-600" /> 2. 정체 반영 Vessel ETA
-                </span>
-                <strong style={{ color: '#e11d48' }}>{vesselRealtimeEta}</strong>
-              </div>
-
-              {/* Open-Meteo Free Forecast API Live Weather Data */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.15rem', marginTop: '0.15rem', borderTop: '1px dashed #fef08a' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#0284c7', fontWeight: 700 }}>
-                  <CloudSun className="w-3 h-3 text-sky-600" /> Open-Meteo ({destCityName} 날씨):
-                </span>
-                <strong style={{ color: '#0369a1', fontSize: '0.65rem' }}>
-                  {isWeatherLoading ? '조회 중...' : (
-                    weatherData ? `${weatherData.temperature}°C / 풍속 ${weatherData.windspeed}km/h (${getWeatherDescription(weatherData.weathercode)})` : '실시간 기상 수신 완료'
-                  )}
-                </strong>
-              </div>
-            </div>
-
-            <div style={{ marginTop: '0.3rem', paddingTop: '0.25rem', borderTop: '1px solid #fef08a', fontSize: '0.65rem', color: '#78350f', lineHeight: 1.25 }}>
-              💡 <strong>AI 종합 진단</strong>: {formData.origin.split(' ')[0]} ➔ {formData.destination.split(' ')[0]} 항로에서 Marine API 항만 정체({portCongestionPct}%) 및 Open-Meteo 실시간 기상이 반영되어 ETA가 <strong>{vesselRealtimeEta}</strong>로 산출되었습니다.
-            </div>
-          </div>
-        </div>
-
       </form>
     </div>
   );
