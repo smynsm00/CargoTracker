@@ -66,8 +66,8 @@ export const ShipmentTable = ({ onShowQR }) => {
             <span>출항일 정렬 ({sortAsc ? '오름차순 ⬆️' : '내림차순 ⬇️'})</span>
           </button>
 
+          {/* Filter Dropdown (Deleted '상태 필터:' text label) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>상태 필터:</span>
             <select 
               className="form-control" 
               value={filter} 
@@ -87,7 +87,8 @@ export const ShipmentTable = ({ onShowQR }) => {
         <table className="data-table" style={{ width: '100%' }}>
           <thead>
             <tr>
-              <th style={{ minWidth: '160px' }}>선적 번호 (클릭 시 지도 이동)</th>
+              {/* Deleted '(클릭 시 지도 이동)' subtext */}
+              <th style={{ minWidth: '160px' }}>선적 번호</th>
               <th style={{ minWidth: '220px' }}>경로 / 운송 수단</th>
               <th style={{ minWidth: '130px' }}>진행률 (%)</th>
               <th style={{ color: '#0284c7', background: '#f0f9ff', minWidth: '120px' }}>
@@ -97,8 +98,8 @@ export const ShipmentTable = ({ onShowQR }) => {
                 </div>
               </th>
               <th style={{ minWidth: '130px' }}>예상 도착일 (ETA)</th>
-              <th style={{ minWidth: '110px' }}>상태</th>
-              {/* Section B: Shrunken Icon-only Column */}
+              {/* Section A: Center aligned '상태' header */}
+              <th style={{ minWidth: '120px', textAlign: 'center' }}>상태</th>
               <th style={{ width: '50px', textAlign: 'center' }}></th>
             </tr>
           </thead>
@@ -154,17 +155,18 @@ export const ShipmentTable = ({ onShowQR }) => {
                     )}
                   </td>
 
-                  <td>
+                  {/* Section A: Center aligned status badge cell */}
+                  <td style={{ textAlign: 'center' }}>
                     {s.status === 'COMPLETED' ? (
-                      <span className="badge badge-completed"><CheckCircle2 className="w-3 h-3" /> 운송 완료</span>
+                      <span className="badge badge-completed" style={{ display: 'inline-flex' }}><CheckCircle2 className="w-3 h-3" /> 운송 완료</span>
                     ) : s.status === 'DELAYED' ? (
-                      <span className="badge badge-delayed"><AlertTriangle className="w-3 h-3" /> 일정 지연</span>
+                      <span className="badge badge-delayed" style={{ display: 'inline-flex' }}><AlertTriangle className="w-3 h-3" /> 일정 지연</span>
                     ) : (
-                      <span className="badge badge-in-transit"><Clock className="w-3 h-3" /> 운송 중</span>
+                      <span className="badge badge-in-transit" style={{ display: 'inline-flex' }}><Clock className="w-3 h-3" /> 운송 중</span>
                     )}
                   </td>
 
-                  {/* Section B: Text removed & Column width shrunk to 50px (아이콘 전용 콤팩트 버튼) */}
+                  {/* Icon-only QR Code Button */}
                   <td style={{ width: '50px', textAlign: 'center' }}>
                     <button 
                       className="btn-secondary" 
