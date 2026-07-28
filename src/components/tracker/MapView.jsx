@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Compass, Layers } from 'lucide-react';
+import { Compass, Layers, Activity, TrendingUp } from 'lucide-react';
 
 const MAP_API_KEY = '36b32457393a49d5ab826e667d74b5e6';
 
@@ -38,6 +38,14 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
     ? allShipments 
     : (shipment ? [shipment] : (allShipments.length > 0 ? [allShipments[0]] : []));
 
+  const currentShipment = targetList[0] || shipment || null;
+  const currentProgress = currentShipment?.progress_pct ?? 50;
+
+  // Calculate Average Progress for multi-shipment mode
+  const avgProgress = targetList.length > 0 
+    ? Math.round(targetList.reduce((acc, curr) => acc + (curr.progress_pct || 0), 0) / targetList.length)
+    : 50;
+
   useEffect(() => {
     if (!mapContainerRef.current) return;
     const L = window.L;
@@ -74,7 +82,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
 
     const allPoints = [];
 
-    // Section B: Custom Pin Creator with Extended Width Shape (도형을 넉넉하게 확장)
+    // Custom Pin Creator with Extended Width Shape
     const createCustomDivIcon = (color, text) => L.divIcon({
       className: 'custom-leaflet-pin',
       html: `<div style="background: ${color}; color: #ffffff; padding: 4px 12px; border-radius: 12px; font-weight: 800; font-size: 11.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap; border: 2px solid #ffffff; cursor: pointer; display: inline-block; min-width: 120px; text-align: center;">${text}</div>`,
@@ -144,7 +152,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       }).addTo(map);
     });
 
-    // Auto Fit Bounds with maxZoom: 6 (Prevents zooming into local street corners!)
+    // Auto Fit Bounds with maxZoom: 6
     if (allPoints.length > 0) {
       const bounds = L.latLngBounds(allPoints);
       map.fitBounds(bounds, { padding: [60, 60], maxZoom: 6 });
@@ -158,15 +166,65 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       {/* Real Interactive Leaflet Map Container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
 
-      {/* Floating Bottom Container */}
+      {/* Floating Area A: Prominently Displaying Transport Progress (%) */}
       <div style={{ position: 'absolute', bottom: '0.85rem', left: '1.25rem', zIndex: 100, display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
         
-        {/* Floating Card */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-full)', border: '1px solid #bae6fd', boxShadow: '0 8px 24px -5px rgba(0,0,0,0.12)', width: 'fit-content' }}>
-          {showAll ? <Layers className="w-4 h-4 text-blue-600" /> : <Compass className="w-4 h-4 text-blue-600" />}
-          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a' }}>
-            {showAll ? `고객사 전체항로 맵 (총 ${targetList.length}개 선적건 통합 관제)` : '실시간 국제 운송 항로 지도 (Leaflet API)'}
-          </span>
+        {/* Floating Progress Card */}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.75rem', 
+          background: 'rgba(255, 255, 255, 0.98)', 
+          backdropFilter: 'blur(12px)', 
+          padding: '0.55rem 1.15rem', 
+          borderRadius: 'var(--radius-full)', 
+          border: '1.5px solid #93c5fd', 
+          boxShadow: '0 10px 30px -5px rgba(37, 99, 235, 0.25)', 
+          width: 'fit-content' 
+        }}>
+          {showAll ? (
+            <Layers className="w-5 h-5 text-blue-600" />
+          ) : (
+            <TrendingUp className="w-5 h-5 text-blue-600" />
+          )}
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a' }}>
+              {showAll ? (
+                `고객사 전체항로 통합 관제 (총 ${targetList.length}건)`
+              ) : (
+                `[${currentShipment?.tracking_number || '선적건'}] 운송 진행률`
+              )}
+            </span>
+
+            {/* Mini Progress Bar */}
+            <div style={{ width: 85, height: 8, background: '#e2e8f0', borderRadius: 4, overflow: 'hidden', display: 'flex' }}>
+              <div style={{ 
+                width: `${showAll ? avgProgress : currentProgress}%`, 
+                height: '100%', 
+                background: 'linear-gradient(90deg, #2563eb, #059669)',
+                borderRadius: 4,
+                transition: 'width 0.5s ease'
+              }} />
+            </div>
+
+            {/* Prominent Highlighted Progress Percentage Badge */}
+            <span style={{ 
+              background: 'linear-gradient(135deg, #2563eb, #0284c7)', 
+              color: '#ffffff', 
+              padding: '0.2rem 0.65rem', 
+              borderRadius: '20px', 
+              fontWeight: 900, 
+              fontSize: '0.92rem', 
+              letterSpacing: '-0.01em',
+              boxShadow: '0 2px 8px rgba(37,99,235,0.35)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.2rem'
+            }}>
+              {showAll ? `${avgProgress}% (평균)` : `${currentProgress}%`}
+            </span>
+          </div>
         </div>
 
         {/* Section A: Copyright text placed at the VERY BOTTOM */}
