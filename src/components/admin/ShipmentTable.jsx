@@ -90,7 +90,6 @@ export const ShipmentTable = ({ onShowQR }) => {
               <th>선적 번호 (클릭 시 지도 이동)</th>
               <th>경로 / 운송 수단</th>
               <th>진행률 (%)</th>
-              {/* Section A: New Column '출항일 (ETD)' */}
               <th style={{ color: '#0284c7', background: '#f0f9ff' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <Calendar className="w-3.5 h-3.5 text-blue-600" />
@@ -99,14 +98,13 @@ export const ShipmentTable = ({ onShowQR }) => {
               </th>
               <th>예상 도착일 (ETA)</th>
               <th>상태</th>
-              <th>수신자 연락처</th>
               <th>작업</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan="8" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>
+                <td colSpan="7" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '2rem' }}>
                   등록된 선적 정보가 없습니다.
                 </td>
               </tr>
@@ -138,7 +136,7 @@ export const ShipmentTable = ({ onShowQR }) => {
                     </div>
                   </td>
 
-                  {/* Section A: Departure Date Cell (출항일) */}
+                  {/* Departure Date Cell (출항일) */}
                   <td className="mono" style={{ fontWeight: 700, color: '#0369a1', background: '#f0f9ff' }}>
                     {s.departure_date || '2026-07-28'}
                   </td>
@@ -161,11 +159,9 @@ export const ShipmentTable = ({ onShowQR }) => {
                       <span className="badge badge-in-transit"><Clock className="w-3 h-3" /> 운송 중</span>
                     )}
                   </td>
-                  <td>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{s.recipient_email || '-'}</div>
-                  </td>
 
-                  {/* Section B Removed: Only 'QR/링크' button remains, '수정' and '삭제' buttons deleted */}
+                  {/* Note: '수신자 연락처' column removed as requested */}
+
                   <td>
                     <button className="btn-secondary" style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem' }} onClick={() => onShowQR(s)}>
                       <QrCode className="w-3.5 h-3.5" /> QR/링크
