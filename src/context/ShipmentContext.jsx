@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const SUPABASE_URL = 'https://bpvbnzbabrzueoxabqel.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwdmJuemJhYnJ6dWVveGFicWVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NTU2OTEsImV4cCI6MjEwMDQzMTY5MX0.C3aBQCY7PiptIz6gDIweR0K8jh-l48jnfFmyjSkmFa4';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://bpvbnzbabrzueoxabqel.supabase.co';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJwdmJuemJhYnJ6dWVveGFicWVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NTU2OTEsImV4cCI6MjEwMDQzMTY5MX0.C3aBQCY7PiptIz6gDIweR0K8jh-l48jnfFmyjSkmFa4';
 
 // Default 5 shipment records per customer ID matching Supabase DB with departure_date (출항일)
 const INITIAL_SHIPMENTS = [
