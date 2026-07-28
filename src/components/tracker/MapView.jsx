@@ -74,12 +74,12 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
 
     const allPoints = [];
 
-    // Custom Icon Creators
+    // Section B: Custom Pin Creator with Extended Width Shape (도형을 넉넉하게 확장)
     const createCustomDivIcon = (color, text) => L.divIcon({
       className: 'custom-leaflet-pin',
-      html: `<div style="background: ${color}; color: #ffffff; padding: 4px 8px; border-radius: 10px; font-weight: 800; font-size: 11px; box-shadow: 0 4px 10px rgba(0,0,0,0.25); white-space: nowrap; border: 2px solid #ffffff; cursor: pointer;">${text}</div>`,
-      iconSize: [90, 24],
-      iconAnchor: [45, 12]
+      html: `<div style="background: ${color}; color: #ffffff; padding: 4px 12px; border-radius: 12px; font-weight: 800; font-size: 11.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap; border: 2px solid #ffffff; cursor: pointer; display: inline-block; min-width: 120px; text-align: center;">${text}</div>`,
+      iconSize: [160, 30],
+      iconAnchor: [80, 15]
     });
 
     // Render each shipment's route, markers, and vehicle pin
@@ -108,7 +108,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
         iconAnchor: [17, 17]
       });
 
-      // Origin Marker
+      // Origin Marker with Extended Width Shape
       const originMarker = L.marker(originCoords, { icon: createCustomDivIcon(color, `${shp.tracking_number} 출발`) })
         .addTo(map)
         .bindPopup(`<b>[${shp.tracking_number}] 출발지</b><br/>${originStr}`);
@@ -117,7 +117,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
         if (onSelectShipment) onSelectShipment(shp);
       });
 
-      // Destination Marker
+      // Destination Marker with Extended Width Shape
       const destMarker = L.marker(destCoords, { icon: createCustomDivIcon('#0f172a', `${shp.tracking_number} 도착`) })
         .addTo(map)
         .bindPopup(`<b>[${shp.tracking_number}] 목적지</b><br/>${destStr}`);
@@ -158,7 +158,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       {/* Real Interactive Leaflet Map Container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
 
-      {/* Floating Bottom Container: Floating Card on top, Section A copyright text at VERY BOTTOM */}
+      {/* Floating Bottom Container */}
       <div style={{ position: 'absolute', bottom: '0.85rem', left: '1.25rem', zIndex: 100, display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
         
         {/* Floating Card */}

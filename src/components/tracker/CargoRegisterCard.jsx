@@ -15,7 +15,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
     original_eta: today
   });
 
-  // Automatically update input fields B when selectedShipment changes (e.g. Map marker clicked)
+  // Automatically update input fields when selectedShipment changes (e.g. Map marker clicked)
   useEffect(() => {
     if (selectedShipment) {
       setFormData({
@@ -56,7 +56,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
   return (
     <div style={{ 
       background: '#ffffff', 
-      padding: '0.85rem 1rem', 
+      padding: '0.75rem 1rem 0.85rem 1rem', 
       width: '100%', 
       height: '100%', 
       display: 'flex', 
@@ -65,12 +65,12 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
       overflow: 'hidden' 
     }}>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', height: '100%' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
           
           {/* 1 & 2. Cargo ID & Transport Mode */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.2rem' }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
                 <Tag className="w-3.5 h-3.5 text-amber-600" />
                 <span>화물 번호 (Cargo ID)</span>
               </label>
@@ -86,7 +86,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
             </div>
 
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.2rem' }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
                 <Rocket className="w-3.5 h-3.5 text-blue-600" />
                 <span>운송 수단</span>
               </label>
@@ -106,7 +106,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
           {/* 3 & 4. Origin & Destination */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.2rem' }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
                 <MapPin className="w-3.5 h-3.5 text-rose-600" />
                 <span>출발지 (Origin)</span>
               </label>
@@ -122,7 +122,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
             </div>
 
             <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.2rem' }}>
+              <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
                 <Flag className="w-3.5 h-3.5 text-indigo-600" />
                 <span>목적지 (Destination)</span>
               </label>
@@ -140,7 +140,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
 
           {/* 5. Original ETA */}
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.2rem' }}>
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.75rem', marginBottom: '0.15rem' }}>
               <Calendar className="w-3.5 h-3.5 text-emerald-600" />
               <span>최초 예상 도착일 (Original ETA)</span>
             </label>
@@ -155,11 +155,11 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
           </div>
 
           {/* AI Delay Reason Analysis Yellow Box */}
-          <div style={{ background: '#fffbe6', border: '1px solid #fef08a', borderRadius: 'var(--radius-md)', padding: '0.65rem 0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+          <div style={{ background: '#fffbe6', border: '1px solid #fef08a', borderRadius: 'var(--radius-md)', padding: '0.55rem 0.65rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#b45309' }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#b45309' }}>
                   지연 사유 분석 및 위험상황 안내
                 </span>
               </div>
@@ -168,12 +168,12 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
               </span>
             </div>
 
-            <div style={{ background: '#ffffff', border: '1px solid #fde68a', borderRadius: 'var(--radius-sm)', padding: '0.5rem 0.65rem' }}>
-              <div style={{ fontSize: '0.7rem', fontWeight: 700, color: '#92400e', marginBottom: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <div style={{ background: '#ffffff', border: '1px solid #fde68a', borderRadius: 'var(--radius-sm)', padding: '0.45rem 0.6rem' }}>
+              <div style={{ fontSize: '0.68rem', fontWeight: 700, color: '#92400e', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <Activity className="w-3 h-3 text-amber-600" />
                 실시간 운송 지연 원인 분석 (Delay Factor Analysis)
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', fontSize: '0.7rem', color: '#334155' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem', fontSize: '0.68rem', color: '#334155' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <Anchor className="w-3 h-3 text-blue-600" /> 1. 항만 입항 정체 (Port Congestion)
@@ -193,7 +193,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
                   <strong style={{ color: '#475569' }}>20%</strong>
                 </div>
               </div>
-              <div style={{ marginTop: '0.35rem', paddingTop: '0.3rem', borderTop: '1px stroke #fef08a', fontSize: '0.68rem', color: '#78350f', lineHeight: 1.3 }}>
+              <div style={{ marginTop: '0.3rem', paddingTop: '0.25rem', borderTop: '1px stroke #fef08a', fontSize: '0.65rem', color: '#78350f', lineHeight: 1.25 }}>
                 💡 <strong>AI 종합 진단</strong>: {formData.origin.split(' ')[0]} ➔ {formData.destination.split(' ')[0]} 항로 구간에서 현지 항만 대기 선박 정체 및 해상 기상 악화로 인해 ETA가 지연 분석되었습니다.
               </div>
             </div>
@@ -201,11 +201,26 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
 
         </div>
 
-        {/* Submit Button */}
-        <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '0.55rem 1rem', fontSize: '0.85rem' }}>
-          <Plus className="w-4 h-4" />
-          선적 정보 업데이트 및 저장
-        </button>
+        {/* Section A: Rearranged Save Button with Optimal Top/Bottom Margins & Box Shadow */}
+        <div style={{ marginTop: '0.5rem', paddingTop: '0.4rem' }}>
+          <button 
+            type="submit" 
+            className="btn-primary" 
+            style={{ 
+              width: '100%', 
+              justify: 'center', 
+              padding: '0.65rem 1rem', 
+              fontSize: '0.9rem', 
+              fontWeight: 800, 
+              borderRadius: 'var(--radius-md)', 
+              boxShadow: '0 4px 14px rgba(37, 99, 235, 0.25)', 
+              cursor: 'pointer' 
+            }}
+          >
+            <Plus className="w-4 h-4" />
+            선적 정보 업데이트 및 저장
+          </button>
+        </div>
       </form>
     </div>
   );
