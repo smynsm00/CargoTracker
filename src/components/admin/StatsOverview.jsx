@@ -11,8 +11,15 @@ export const StatsOverview = () => {
   });
 
   const totalCount = customerShipments.length;
-  const inTransitCount = customerShipments.filter(s => s.status === 'IN_TRANSIT').length;
-  const delayedCount = customerShipments.filter(s => s.status === 'DELAYED').length;
+  
+  const delayedCount = customerShipments.filter(s => 
+    s.status === 'DELAYED' || (s.status !== 'COMPLETED' && s.original_eta && s.current_eta && s.original_eta !== s.current_eta)
+  ).length;
+
+  const inTransitCount = customerShipments.filter(s => 
+    s.status === 'IN_TRANSIT' && (!s.original_eta || !s.current_eta || s.original_eta === s.current_eta)
+  ).length;
+
   const completedCount = customerShipments.filter(s => s.status === 'COMPLETED').length;
 
   return (
@@ -32,7 +39,6 @@ export const StatsOverview = () => {
         <div className="mono" style={{ fontSize: '2rem', fontWeight: 800, color: '#d97706' }}>{delayedCount}</div>
       </div>
 
-      {/* 4th Card Updated to '운송 완료 건수' (Replaces obsolete '발송 실패 알림') */}
       <div className="glass-card" style={{ background: '#ffffff' }}>
         <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: 600 }}>운송 완료 건수</div>
         <div className="mono" style={{ fontSize: '2rem', fontWeight: 800, color: '#059669' }}>{completedCount}</div>

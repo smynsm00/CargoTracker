@@ -162,28 +162,36 @@ export const ShipmentProvider = ({ children }) => {
       if (res.ok) {
         const data = await res.json();
         if (data && data.length > 0) {
-          const mapped = data.map((dbRow) => ({
-            id: `shp-${dbRow.id}`,
-            customer_id: dbRow.customer_id || 'CUST001',
-            customer_name: dbRow.customer_name || '(주) 한진글로벌물류',
-            bl_number: dbRow.bl_number,
-            cargo_id: dbRow.cargo_id,
-            tracking_number: dbRow.bl_number ? `CT-2026-${dbRow.id + 8800}` : `CT-2026-${dbRow.id}`,
-            transport_mode: dbRow.carrier_type || 'SEA',
-            carrier_name: dbRow.vessel_name || 'COSCO Shipping',
-            vessel_flight_no: dbRow.vessel_name || 'COSCO PRIDE 088W',
-            origin: dbRow.origin,
-            destination: dbRow.destination,
-            departure_date: dbRow.departure_date || (dbRow.created_at ? dbRow.created_at.split('T')[0] : '2026-07-28'),
-            progress_pct: dbRow.progress_percent ?? 50,
-            current_step: dbRow.status === 'COMPLETED' ? '인도 완료' : '운송 중',
-            original_eta: dbRow.eta_original,
-            current_eta: dbRow.eta_current,
-            delay_reason: dbRow.delay_reason || '',
-            status: dbRow.status || 'IN_TRANSIT',
-            public_token: `token-${dbRow.id}`,
-            recipient_phone: dbRow.recipient_phone
-          }));
+          const mapped = data.map((dbRow) => {
+            // Determine status: if ETA is delayed, ensure status is DELAYED
+            let finalStatus = dbRow.status || 'IN_TRANSIT';
+            if (dbRow.eta_original && dbRow.eta_current && dbRow.eta_original !== dbRow.eta_current && finalStatus !== 'COMPLETED') {
+              finalStatus = 'DELAYED';
+            }
+
+            return {
+              id: `shp-${dbRow.id}`,
+              customer_id: dbRow.customer_id || 'CUST001',
+              customer_name: dbRow.customer_name || '(주) 한진글로벌물류',
+              bl_number: dbRow.bl_number,
+              cargo_id: dbRow.cargo_id,
+              tracking_number: dbRow.bl_number ? `CT-2026-${dbRow.id + 8800}` : `CT-2026-${dbRow.id}`,
+              transport_mode: dbRow.carrier_type || 'SEA',
+              carrier_name: dbRow.vessel_name || 'COSCO Shipping',
+              vessel_flight_no: dbRow.vessel_name || 'COSCO PRIDE 088W',
+              origin: dbRow.origin,
+              destination: dbRow.destination,
+              departure_date: dbRow.departure_date || (dbRow.created_at ? dbRow.created_at.split('T')[0] : '2026-07-28'),
+              progress_pct: dbRow.progress_percent ?? 50,
+              current_step: finalStatus === 'COMPLETED' ? '인도 완료' : '운송 중',
+              original_eta: dbRow.eta_original,
+              current_eta: dbRow.eta_current,
+              delay_reason: dbRow.delay_reason || '',
+              status: finalStatus,
+              public_token: `token-${dbRow.id}`,
+              recipient_phone: dbRow.recipient_phone
+            };
+          });
           setShipments(mapped);
         }
       }

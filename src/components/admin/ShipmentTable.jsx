@@ -26,6 +26,9 @@ export const ShipmentTable = ({ onShowQR }) => {
 
   const filtered = sortedShipments.filter(s => {
     if (filter === 'ALL') return true;
+    const isDelayed = s.status === 'DELAYED' || (s.status !== 'COMPLETED' && s.original_eta && s.current_eta && s.original_eta !== s.current_eta);
+    if (filter === 'DELAYED') return isDelayed;
+    if (filter === 'IN_TRANSIT') return s.status === 'IN_TRANSIT' && !isDelayed;
     return s.status === filter;
   });
 
@@ -66,7 +69,7 @@ export const ShipmentTable = ({ onShowQR }) => {
             <span>출항일 정렬 ({sortAsc ? '오름차순 ⬆️' : '내림차순 ⬇️'})</span>
           </button>
 
-          {/* Filter Dropdown (Deleted '상태 필터:' text label) */}
+          {/* Filter Dropdown */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <select 
               className="form-control" 
@@ -87,7 +90,6 @@ export const ShipmentTable = ({ onShowQR }) => {
         <table className="data-table" style={{ width: '100%' }}>
           <thead>
             <tr>
-              {/* Deleted '(클릭 시 지도 이동)' subtext */}
               <th style={{ minWidth: '160px' }}>선적 번호</th>
               <th style={{ minWidth: '220px' }}>경로 / 운송 수단</th>
               <th style={{ minWidth: '130px' }}>진행률 (%)</th>
@@ -98,7 +100,6 @@ export const ShipmentTable = ({ onShowQR }) => {
                 </div>
               </th>
               <th style={{ minWidth: '130px' }}>예상 도착일 (ETA)</th>
-              {/* Section A: Center aligned '상태' header */}
               <th style={{ minWidth: '120px', textAlign: 'center' }}>상태</th>
               <th style={{ width: '50px', textAlign: 'center' }}></th>
             </tr>
@@ -111,74 +112,78 @@ export const ShipmentTable = ({ onShowQR }) => {
                 </td>
               </tr>
             ) : (
-              filtered.map(s => (
-                <tr key={s.id}>
-                  {/* Tracking Number Cell */}
-                  <td 
-                    className="mono" 
-                    onClick={() => handleTrackingClick(s)}
-                    style={{ fontWeight: 700, cursor: 'pointer', background: 'rgba(224, 242, 254, 0.4)', borderRadius: 'var(--radius-sm)' }}
-                    title="선적 번호 클릭 시 70% 항로 지도시각화 페이지로 이동합니다"
-                  >
-                    <div style={{ color: 'var(--primary-blue)', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.2rem 0.4rem', borderRadius: 6 }}>
-                      <MapPin className="w-4 h-4 text-blue-600" />
-                      <span style={{ textDecoration: 'underline' }}>{s.tracking_number}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ fontWeight: 600 }}>{s.origin} ➔ {s.destination}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>{s.carrier_name} ({s.transport_mode})</div>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <div style={{ flex: 1, height: 6, background: 'rgba(0,0,0,0.08)', borderRadius: 4, overflow: 'hidden', width: 60 }}>
-                        <div style={{ width: `${s.progress_pct}%`, height: '100%', background: 'var(--grad-primary)' }}></div>
-                      </div>
-                      <span className="mono" style={{ fontSize: '0.8rem', fontWeight: 700 }}>{s.progress_pct}%</span>
-                    </div>
-                  </td>
+              filtered.map(s => {
+                const isDelayed = s.status === 'DELAYED' || (s.status !== 'COMPLETED' && s.original_eta && s.current_eta && s.original_eta !== s.current_eta);
 
-                  {/* Departure Date Cell (출항일) */}
-                  <td className="mono" style={{ fontWeight: 700, color: '#0369a1', background: '#f0f9ff' }}>
-                    {s.departure_date || '2026-07-28'}
-                  </td>
-
-                  {/* Multi-line ETA */}
-                  <td>
-                    {s.original_eta !== s.current_eta ? (
-                      <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
-                        <span style={{ textDecoration: 'line-through', color: 'var(--text-dim)' }}>{s.original_eta}</span>
-                        <span style={{ color: 'var(--status-danger)', fontWeight: 700 }}>➔ {s.current_eta}</span>
-                      </div>
-                    ) : (
-                      <div style={{ fontSize: '0.85rem' }}>{s.current_eta}</div>
-                    )}
-                  </td>
-
-                  {/* Section A: Center aligned status badge cell */}
-                  <td style={{ textAlign: 'center' }}>
-                    {s.status === 'COMPLETED' ? (
-                      <span className="badge badge-completed" style={{ display: 'inline-flex' }}><CheckCircle2 className="w-3 h-3" /> 운송 완료</span>
-                    ) : s.status === 'DELAYED' ? (
-                      <span className="badge badge-delayed" style={{ display: 'inline-flex' }}><AlertTriangle className="w-3 h-3" /> 일정 지연</span>
-                    ) : (
-                      <span className="badge badge-in-transit" style={{ display: 'inline-flex' }}><Clock className="w-3 h-3" /> 운송 중</span>
-                    )}
-                  </td>
-
-                  {/* Icon-only QR Code Button */}
-                  <td style={{ width: '50px', textAlign: 'center' }}>
-                    <button 
-                      className="btn-secondary" 
-                      style={{ padding: '0.35rem 0.45rem', borderRadius: 'var(--radius-sm)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} 
-                      onClick={() => onShowQR(s)}
-                      title="QR 코드 및 보안 추적 링크 보기"
+                return (
+                  <tr key={s.id}>
+                    {/* Tracking Number Cell */}
+                    <td 
+                      className="mono" 
+                      onClick={() => handleTrackingClick(s)}
+                      style={{ fontWeight: 700, cursor: 'pointer', background: 'rgba(224, 242, 254, 0.4)', borderRadius: 'var(--radius-sm)' }}
+                      title="선적 번호 클릭 시 70% 항로 지도시각화 페이지로 이동합니다"
                     >
-                      <QrCode className="w-4 h-4 text-blue-600" />
-                    </button>
-                  </td>
-                </tr>
-              ))
+                      <div style={{ color: 'var(--primary-blue)', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.35rem', padding: '0.2rem 0.4rem', borderRadius: 6 }}>
+                        <MapPin className="w-4 h-4 text-blue-600" />
+                        <span style={{ textDecoration: 'underline' }}>{s.tracking_number}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ fontWeight: 600 }}>{s.origin} ➔ {s.destination}</div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>{s.carrier_name} ({s.transport_mode})</div>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ flex: 1, height: 6, background: 'rgba(0,0,0,0.08)', borderRadius: 4, overflow: 'hidden', width: 60 }}>
+                          <div style={{ width: `${s.progress_pct}%`, height: '100%', background: 'var(--grad-primary)' }}></div>
+                        </div>
+                        <span className="mono" style={{ fontSize: '0.8rem', fontWeight: 700 }}>{s.progress_pct}%</span>
+                      </div>
+                    </td>
+
+                    {/* Departure Date Cell (출항일) */}
+                    <td className="mono" style={{ fontWeight: 700, color: '#0369a1', background: '#f0f9ff' }}>
+                      {s.departure_date || '2026-07-28'}
+                    </td>
+
+                    {/* Multi-line ETA */}
+                    <td>
+                      {s.original_eta !== s.current_eta ? (
+                        <div style={{ fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                          <span style={{ textDecoration: 'line-through', color: 'var(--text-dim)' }}>{s.original_eta}</span>
+                          <span style={{ color: 'var(--status-danger)', fontWeight: 700 }}>➔ {s.current_eta}</span>
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: '0.85rem' }}>{s.current_eta}</div>
+                      )}
+                    </td>
+
+                    {/* Section A: Center aligned status badge cell - Automatically shows '일정 지연' if ETA is delayed */}
+                    <td style={{ textAlign: 'center' }}>
+                      {s.status === 'COMPLETED' ? (
+                        <span className="badge badge-completed" style={{ display: 'inline-flex' }}><CheckCircle2 className="w-3 h-3" /> 운송 완료</span>
+                      ) : isDelayed ? (
+                        <span className="badge badge-delayed" style={{ display: 'inline-flex' }}><AlertTriangle className="w-3 h-3" /> 일정 지연</span>
+                      ) : (
+                        <span className="badge badge-in-transit" style={{ display: 'inline-flex' }}><Clock className="w-3 h-3" /> 운송 중</span>
+                      )}
+                    </td>
+
+                    {/* Icon-only QR Code Button */}
+                    <td style={{ width: '50px', textAlign: 'center' }}>
+                      <button 
+                        className="btn-secondary" 
+                        style={{ padding: '0.35rem 0.45rem', borderRadius: 'var(--radius-sm)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} 
+                        onClick={() => onShowQR(s)}
+                        title="QR 코드 및 보안 추적 링크 보기"
+                      >
+                        <QrCode className="w-4 h-4 text-blue-600" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
