@@ -1,7 +1,7 @@
 import React from 'react';
 import { useShipments } from '../../context/ShipmentContext';
 
-export const StatsOverview = ({ notifications }) => {
+export const StatsOverview = () => {
   const { shipments, user } = useShipments();
 
   const currentCustomerId = user?.customer_id || 'CUST001';
@@ -13,7 +13,7 @@ export const StatsOverview = ({ notifications }) => {
   const totalCount = customerShipments.length;
   const inTransitCount = customerShipments.filter(s => s.status === 'IN_TRANSIT').length;
   const delayedCount = customerShipments.filter(s => s.status === 'DELAYED').length;
-  const failedNotificationsCount = notifications.filter(n => n.status === 'FAILED').length;
+  const completedCount = customerShipments.filter(s => s.status === 'COMPLETED').length;
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
@@ -32,11 +32,10 @@ export const StatsOverview = ({ notifications }) => {
         <div className="mono" style={{ fontSize: '2rem', fontWeight: 800, color: '#d97706' }}>{delayedCount}</div>
       </div>
 
+      {/* 4th Card Updated to '운송 완료 건수' (Replaces obsolete '발송 실패 알림') */}
       <div className="glass-card" style={{ background: '#ffffff' }}>
-        <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: 600 }}>발송 실패 알림</div>
-        <div className="mono" style={{ fontSize: '2rem', fontWeight: 800, color: '#e11d48' }}>
-          {failedNotificationsCount} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: '#e11d48' }}>(수동 재발송 필요)</span>
-        </div>
+        <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: 600 }}>운송 완료 건수</div>
+        <div className="mono" style={{ fontSize: '2rem', fontWeight: 800, color: '#059669' }}>{completedCount}</div>
       </div>
     </div>
   );
