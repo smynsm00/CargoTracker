@@ -3,19 +3,20 @@ import { Compass, Layers } from 'lucide-react';
 
 const MAP_API_KEY = '36b32457393a49d5ab826e667d74b5e6';
 
-// Coordinates mapping for major ports and airports
+// Exact Port & Airport International Coordinates (Maritime & Aviation Hubs)
 const CITY_COORDS = {
   'Shanghai (CNSHA)': [31.2304, 121.4737],
+  'Shanghai (SHA)': [31.2304, 121.4737],
   'Shanghai': [31.2304, 121.4737],
-  'Busan (KRPUS)': [35.1796, 129.0756],
-  'Busan, KR': [35.1796, 129.0756],
-  'Busan': [35.1796, 129.0756],
+  'Busan (KRPUS)': [35.1028, 129.0403],
+  'Busan, KR': [35.1028, 129.0403],
+  'Busan': [35.1028, 129.0403],
   'Rotterdam (RTM)': [51.9244, 4.4777],
   'Rotterdam, NL': [51.9244, 4.4777],
   'Incheon (ICN)': [37.4602, 126.4407],
   'Incheon, KR': [37.4602, 126.4407],
-  'Los Angeles (LAX)': [33.9416, -118.4085],
-  'Los Angeles, US': [33.9416, -118.4085],
+  'Los Angeles (LAX)': [33.7423, -118.2705],
+  'Los Angeles, US': [33.7423, -118.2705],
   'Hamburg (DEHAM)': [53.5511, 9.9937],
   'Hamburg, DE': [53.5511, 9.9937],
   'Ningbo (CNNGB)': [29.8683, 121.5440],
@@ -46,15 +47,17 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
     if (!leafletMapInstance.current) {
       const map = L.map(mapContainerRef.current, {
         center: [30, 20],
-        zoom: 2,
-        zoomControl: true
+        zoom: 3,
+        zoomControl: true,
+        minZoom: 2,
+        maxZoom: 18
       });
 
       // CartoDB Voyager Tile Layer with MAP_API_KEY
       L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?apiKey=${MAP_API_KEY}`, {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
         subdomains: 'abcd',
-        maxZoom: 19
+        maxZoom: 18
       }).addTo(map);
 
       leafletMapInstance.current = map;
@@ -74,9 +77,9 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
     // Custom Icon Creators
     const createCustomDivIcon = (color, text) => L.divIcon({
       className: 'custom-leaflet-pin',
-      html: `<div style="background: ${color}; color: #ffffff; padding: 3px 7px; border-radius: 10px; font-weight: 800; font-size: 11px; box-shadow: 0 4px 10px rgba(0,0,0,0.25); white-space: nowrap; border: 2px solid #ffffff; cursor: pointer;">${text}</div>`,
-      iconSize: [80, 22],
-      iconAnchor: [40, 11]
+      html: `<div style="background: ${color}; color: #ffffff; padding: 4px 8px; border-radius: 10px; font-weight: 800; font-size: 11px; box-shadow: 0 4px 10px rgba(0,0,0,0.25); white-space: nowrap; border: 2px solid #ffffff; cursor: pointer;">${text}</div>`,
+      iconSize: [90, 24],
+      iconAnchor: [45, 12]
     });
 
     // Render each shipment's route, markers, and vehicle pin
@@ -88,8 +91,8 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       const originStr = shp.origin || 'Shanghai (CNSHA)';
       const destStr = shp.destination || 'Busan (KRPUS)';
 
-      const originCoords = CITY_COORDS[originStr] || [31.2304, 121.4737];
-      const destCoords = CITY_COORDS[destStr] || [35.1796, 129.0756];
+      const originCoords = CITY_COORDS[originStr] || CITY_COORDS['Shanghai'] || [31.2304, 121.4737];
+      const destCoords = CITY_COORDS[destStr] || CITY_COORDS['Busan'] || [35.1028, 129.0403];
 
       const currentLat = originCoords[0] + (destCoords[0] - originCoords[0]) * (progressPct / 100);
       const currentLng = originCoords[1] + (destCoords[1] - originCoords[1]) * (progressPct / 100);
@@ -141,10 +144,10 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       }).addTo(map);
     });
 
-    // Auto Fit Bounds
+    // Auto Fit Bounds with maxZoom: 6 (Prevents zooming into local street corners!)
     if (allPoints.length > 0) {
       const bounds = L.latLngBounds(allPoints);
-      map.fitBounds(bounds, { padding: [50, 50] });
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 6 });
     }
 
   }, [targetList, showAll, onSelectShipment]);
