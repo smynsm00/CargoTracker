@@ -162,7 +162,7 @@ export const ShipmentProvider = ({ children }) => {
       if (res.ok) {
         const data = await res.json();
         if (data && data.length > 0) {
-          const mapped = data.map((dbRow, idx) => ({
+          const mapped = data.map((dbRow) => ({
             id: `shp-${dbRow.id}`,
             customer_id: dbRow.customer_id || 'CUST001',
             customer_name: dbRow.customer_name || '(주) 한진글로벌물류',
@@ -174,7 +174,7 @@ export const ShipmentProvider = ({ children }) => {
             vessel_flight_no: dbRow.vessel_name || 'COSCO PRIDE 088W',
             origin: dbRow.origin,
             destination: dbRow.destination,
-            departure_date: dbRow.created_at ? dbRow.created_at.split('T')[0] : `2026-07-2${3 + (idx % 6)}`,
+            departure_date: dbRow.departure_date || (dbRow.created_at ? dbRow.created_at.split('T')[0] : '2026-07-28'),
             progress_pct: dbRow.progress_percent ?? 50,
             current_step: dbRow.status === 'COMPLETED' ? '인도 완료' : '운송 중',
             original_eta: dbRow.eta_original,
