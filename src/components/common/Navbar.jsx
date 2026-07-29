@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useShipments } from '../../context/ShipmentContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { Zap, ShieldCheck, Search, LogOut, User, Map, ChevronDown, Globe, Menu, X } from 'lucide-react';
+import { Zap, ShieldCheck, Search, LogOut, User, Map, ChevronDown, Globe, Menu, X, ArrowRight } from 'lucide-react';
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout } = useShipments();
@@ -59,7 +59,7 @@ export const Navbar = () => {
         </form>
       </div>
 
-      {/* Right Navigation Links: Desktop Mode */}
+      {/* Right Navigation Links: Desktop Mode (Section A Items) */}
       <div className="desktop-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         
         {/* 1. Button: Global Route Map */}
@@ -186,7 +186,7 @@ export const Navbar = () => {
             gap: '0.2rem',
             background: '#f8fafc',
             border: '1.5px solid #cbd5e1',
-            padding: '0.3rem 0.5rem',
+            padding: '0.3rem 0.55rem',
             borderRadius: 'var(--radius-full)',
             fontSize: '0.75rem',
             fontWeight: 800,
@@ -198,21 +198,22 @@ export const Navbar = () => {
           <span>{lang === 'ko' ? 'ENG' : 'KOR'}</span>
         </button>
 
-        {/* Mobile Hamburger Toggle Button (🍔 ☰) */}
+        {/* Mobile Hamburger Button B (☰) */}
         <button
           type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           style={{
-            background: '#2563eb',
+            background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
             color: '#ffffff',
             border: 'none',
-            padding: '0.45rem 0.6rem',
-            borderRadius: 'var(--radius-sm)',
+            padding: '0.5rem 0.75rem',
+            borderRadius: 'var(--radius-md)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(37,99,235,0.3)'
+            gap: '0.35rem',
+            boxShadow: '0 4px 12px rgba(37,99,235,0.35)',
+            fontWeight: 800
           }}
           aria-label="Toggle Mobile Menu"
         >
@@ -220,7 +221,7 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Slide-out Drawer Overlay Menu */}
+      {/* Mobile Slide-out Drawer Overlay Menu (Opens when Button B is pressed!) */}
       {isMobileMenuOpen && (
         <div 
           className="mobile-drawer-overlay"
@@ -230,9 +231,9 @@ export const Navbar = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(15, 23, 42, 0.5)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 999,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 999999, // Highest z-index above map
             display: 'flex',
             justifyContent: 'flex-end'
           }}
@@ -241,12 +242,12 @@ export const Navbar = () => {
           <div 
             className="mobile-drawer-content"
             style={{
-              width: '82%',
-              maxWidth: '320px',
+              width: '85%',
+              maxWidth: '340px',
               height: '100%',
               background: '#ffffff',
-              boxShadow: '-10px 0 30px rgba(0,0,0,0.2)',
-              padding: '1.25rem',
+              boxShadow: '-10px 0 35px rgba(0,0,0,0.25)',
+              padding: '1.5rem 1.25rem',
               display: 'flex',
               flexDirection: 'column',
               gap: '1.25rem',
@@ -254,100 +255,145 @@ export const Navbar = () => {
             }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Drawer Top Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.75rem', borderBottom: '1px solid #e2e8f0' }}>
+            {/* Drawer Header: Title & Close Button */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.85rem', borderBottom: '1.5px solid #e2e8f0' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Zap className="w-5 h-5 text-blue-600" />
-                <span style={{ fontWeight: 800, fontSize: '1.1rem' }}>Menu</span>
+                <Zap className="w-6 h-6 text-blue-600" />
+                <span style={{ fontWeight: 800, fontSize: '1.15rem', color: '#0f172a' }}>CargoTracker Menu</span>
               </div>
               <button 
                 type="button" 
                 onClick={closeMobileMenu}
-                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+                style={{ background: '#f1f5f9', border: 'none', color: '#475569', borderRadius: '50%', padding: '0.35rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Logged-in Customer User Info Card (Section A Item) */}
+            {isAuthenticated && (
+              <div style={{ background: 'linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%)', border: '1px solid #bae6fd', borderRadius: 'var(--radius-md)', padding: '0.85rem 1rem' }}>
+                <span style={{ fontSize: '0.72rem', color: '#0284c7', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '0.2rem' }}>
+                  Logged-in Customer (고객사)
+                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.92rem', fontWeight: 800, color: '#0369a1' }}>
+                  <User className="w-4 h-4 text-blue-600" />
+                  <span>{customerDisplayName}</span>
+                </div>
+              </div>
+            )}
+
             {/* Mobile Search Bar Inside Drawer */}
-            <form onSubmit={handleNavSearch} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f1f5f9', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid #cbd5e1' }}>
+            <form onSubmit={handleNavSearch} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f8fafc', padding: '0.6rem 0.85rem', borderRadius: 'var(--radius-md)', border: '1.5px solid #cbd5e1' }}>
               <Search className="w-4 h-4 text-slate-500" />
               <input 
                 type="text" 
                 placeholder={lang === 'en' ? "Tracking No. / Token..." : "선적 번호 / 보안 토큰..."}
                 value={navSearch}
                 onChange={e => setNavSearch(e.target.value)}
-                style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.85rem', width: '100%', color: '#0f172a' }}
+                style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.88rem', width: '100%', color: '#0f172a', fontWeight: 600 }}
               />
             </form>
 
-            {/* Navigation Links in Drawer */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+            {/* Section A Menu Links Items List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              
+              {/* Section A Item 1: 전체항로맵 (Global Route Map) */}
               <Link 
                 to="/map?all=true" 
                 onClick={closeMobileMenu}
                 style={{ 
                   display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '0.6rem', 
-                  padding: '0.75rem 1rem', 
-                  borderRadius: 'var(--radius-sm)', 
-                  background: '#f8fafc',
-                  color: '#0f172a',
-                  fontWeight: 700,
-                  fontSize: '0.92rem',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.85rem 1.1rem', 
+                  borderRadius: 'var(--radius-md)', 
+                  background: location.pathname === '/map' && location.search.includes('all=true') ? '#eff6ff' : '#f8fafc',
+                  color: location.pathname === '/map' && location.search.includes('all=true') ? '#2563eb' : '#1e293b',
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
                   textDecoration: 'none',
-                  border: '1px solid #e2e8f0'
+                  border: location.pathname === '/map' && location.search.includes('all=true') ? '1.5px solid #93c5fd' : '1px solid #e2e8f0',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.03)'
                 }}
               >
-                <Map className="w-5 h-5 text-blue-600" />
-                <span>{t('navMap')}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <Map className="w-5 h-5 text-blue-600" />
+                  <span>{t('navMap')}</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-slate-400" />
               </Link>
 
+              {/* Section A Item 2: 운송현황관리 (Shipment Control Panel) */}
               <Link 
                 to="/" 
                 onClick={closeMobileMenu}
                 style={{ 
                   display: 'flex', 
                   alignItems: 'center', 
-                  gap: '0.6rem', 
-                  padding: '0.75rem 1rem', 
-                  borderRadius: 'var(--radius-sm)', 
-                  background: 'var(--grad-primary)',
+                  justifyContent: 'space-between',
+                  padding: '0.85rem 1.1rem', 
+                  borderRadius: 'var(--radius-md)', 
+                  background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
                   color: '#ffffff',
-                  fontWeight: 700,
-                  fontSize: '0.92rem',
-                  textDecoration: 'none'
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
+                  textDecoration: 'none',
+                  boxShadow: '0 4px 14px rgba(37,99,235,0.3)'
                 }}
               >
-                <ShieldCheck className="w-5 h-5" />
-                <span>{t('navDashboard')}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <ShieldCheck className="w-5 h-5 text-white" />
+                  <span>{t('navDashboard')}</span>
+                </div>
+                <ArrowRight className="w-4 h-4 text-white" />
               </Link>
             </div>
 
-            {/* Customer User Info & Logout in Drawer */}
+            {/* Language Switcher Section */}
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#475569' }}>Language (언어 설정)</span>
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  background: '#ffffff',
+                  border: '1.5px solid #2563eb',
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: 'var(--radius-full)',
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  color: '#2563eb',
+                  cursor: 'pointer'
+                }}
+              >
+                <Globe className="w-4 h-4 text-blue-600" />
+                <span>{lang === 'ko' ? '🇺🇸 ENG Switch' : '🇰🇷 한국어 전환'}</span>
+              </button>
+            </div>
+
+            {/* Logout Button */}
             {isAuthenticated && (
-              <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', fontWeight: 700, color: '#0369a1', background: '#e0f2fe', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-sm)' }}>
-                  <User className="w-4 h-4 text-blue-600" />
-                  <span>{customerDisplayName}</span>
-                </div>
+              <div style={{ marginTop: 'auto', paddingTop: '0.5rem' }}>
                 <button
                   type="button"
                   onClick={handleLogoutClick}
                   style={{
                     width: '100%',
-                    padding: '0.65rem 1rem',
+                    padding: '0.75rem 1rem',
                     background: '#fff1f2',
                     border: '1px solid #fecdd3',
-                    borderRadius: 'var(--radius-sm)',
+                    borderRadius: 'var(--radius-md)',
                     color: '#e11d48',
-                    fontWeight: 700,
-                    fontSize: '0.88rem',
+                    fontWeight: 800,
+                    fontSize: '0.9rem',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
-                    justify: 'center',
+                    justifyContent: 'center',
                     gap: '0.45rem'
                   }}
                 >
@@ -356,6 +402,7 @@ export const Navbar = () => {
                 </button>
               </div>
             )}
+
           </div>
         </div>
       )}
