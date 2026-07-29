@@ -52,35 +52,10 @@ export const Navbar = () => {
         </form>
       </div>
 
-      {/* Right Navigation Links & Language Switcher */}
+      {/* Right Navigation Links: Route Map ➔ Shipment Control ➔ User Profile ➔ Language Switcher (Far Right A position) */}
       <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         
-        {/* Language Switcher Toggle Button (🇰🇷 KO ↔ 🇺🇸 EN) */}
-        <button
-          type="button"
-          onClick={toggleLanguage}
-          title={lang === 'ko' ? "Switch to English Version" : "한국어 버전으로 전환"}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            background: '#f8fafc',
-            border: '1.5px solid #cbd5e1',
-            padding: '0.35rem 0.65rem',
-            borderRadius: 'var(--radius-full)',
-            fontSize: '0.8rem',
-            fontWeight: 800,
-            color: '#1e293b',
-            cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-            transition: 'all 0.2s ease'
-          }}
-        >
-          <Globe className="w-4 h-4 text-blue-600" />
-          <span>{lang === 'ko' ? '🇺🇸 ENG' : '🇰🇷 KOR'}</span>
-        </button>
-
-        {/* Button: Global Route Map */}
+        {/* 1. Button: Global Route Map */}
         <Link 
           to="/map?all=true" 
           className={`nav-link ${location.pathname === '/map' && location.search.includes('all=true') ? 'active' : ''}`} 
@@ -90,13 +65,13 @@ export const Navbar = () => {
           {t('navMap')}
         </Link>
 
-        {/* Button: Shipment Control Panel */}
+        {/* 2. Button: Shipment Control Panel */}
         <Link to="/" className="btn-primary" style={{ padding: '0.45rem 0.85rem', fontSize: '0.85rem' }}>
           <ShieldCheck className="w-4 h-4" />
           {t('navDashboard')}
         </Link>
 
-        {/* Customer Name Dropdown Button */}
+        {/* 3. Customer Name Dropdown Button */}
         {isAuthenticated && (
           <div style={{ position: 'relative' }}>
             <button 
@@ -165,6 +140,32 @@ export const Navbar = () => {
             )}
           </div>
         )}
+
+        {/* 4. Language Switcher Toggle Button (MOVED TO FAR RIGHT POSITION) */}
+        <button
+          type="button"
+          onClick={toggleLanguage}
+          title={lang === 'ko' ? "Switch to English Version" : "한국어 버전으로 전환"}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            background: '#f8fafc',
+            border: '1.5px solid #cbd5e1',
+            padding: '0.35rem 0.65rem',
+            borderRadius: 'var(--radius-full)',
+            fontSize: '0.8rem',
+            fontWeight: 800,
+            color: '#1e293b',
+            cursor: 'pointer',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          <Globe className="w-4 h-4 text-blue-600" />
+          <span>{lang === 'ko' ? '🇺🇸 ENG' : '🇰🇷 KOR'}</span>
+        </button>
+
       </div>
     </nav>
   );
