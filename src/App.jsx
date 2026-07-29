@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { useShipments } from './context/ShipmentContext';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
@@ -11,19 +11,27 @@ import { TrackingPage } from './pages/TrackingPage';
 
 export function App() {
   const { isAuthenticated } = useShipments();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get('token');
+  const tracking = searchParams.get('tracking');
+
+  // Bypass login gate if accessing via QR Code or Share Link (?token=... or ?tracking=... or /track)
+  const isPublicShareAccess = Boolean(token || tracking || location.pathname === '/track');
 
   return (
     <>
       <Navbar />
 
-      {/* Initial Screen Login Gate (Custom Login / QR Login) */}
-      {!isAuthenticated && <LoginModal />}
+      {/* Show Login Modal ONLY if NOT authenticated AND NOT accessing via QR Code / Share Link */}
+      {!isAuthenticated && !isPublicShareAccess && <LoginModal />}
 
       <Routes>
-        {/* Post-Login Default Page: Admin Dashboard (국제 운송 관리 대시보드) */}
+        {/* Post-Login Default Page: Admin Dashboard */}
         <Route path="/" element={<AdminPage />} />
         
-        {/* Map Visual Page (Opened when clicking a tracking number) */}
+        {/* Map Visual Page (No login required when accessing via QR Code / Share Token) */}
         <Route path="/map" element={<MapViewPage />} />
 
         {/* Public Tracking Page */}
