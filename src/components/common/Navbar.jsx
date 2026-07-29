@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useShipments } from '../../context/ShipmentContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -175,7 +176,7 @@ export const Navbar = () => {
 
       </div>
 
-      {/* Mobile Controls: Globe Toggle + Hamburger Button (Visible only on Mobile) */}
+      {/* Mobile Controls: Globe Toggle + Hamburger Button B (Visible only on Mobile) */}
       <div className="mobile-controls-group" style={{ display: 'none', alignItems: 'center', gap: '0.5rem' }}>
         <button
           type="button"
@@ -221,8 +222,8 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Slide-out Drawer Overlay Menu (Opens when Button B is pressed!) */}
-      {isMobileMenuOpen && (
+      {/* Mobile Slide-out Drawer Overlay Portal (Renders into document.body to escape navbar CSS clipping!) */}
+      {isMobileMenuOpen && ReactDOM.createPortal(
         <div 
           className="mobile-drawer-overlay"
           style={{
@@ -231,9 +232,11 @@ export const Navbar = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(15, 23, 42, 0.65)',
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(15, 23, 42, 0.75)',
             backdropFilter: 'blur(8px)',
-            zIndex: 999999, // Highest z-index above map
+            zIndex: 9999999,
             display: 'flex',
             justifyContent: 'flex-end'
           }}
@@ -244,14 +247,17 @@ export const Navbar = () => {
             style={{
               width: '85%',
               maxWidth: '340px',
-              height: '100%',
+              height: '100vh',
+              maxHeight: '100vh',
               background: '#ffffff',
-              boxShadow: '-10px 0 35px rgba(0,0,0,0.25)',
+              boxShadow: '-10px 0 35px rgba(0,0,0,0.3)',
               padding: '1.5rem 1.25rem',
               display: 'flex',
               flexDirection: 'column',
               gap: '1.25rem',
-              overflowY: 'auto'
+              overflowY: 'auto',
+              position: 'relative',
+              zIndex: 10000000
             }}
             onClick={e => e.stopPropagation()}
           >
@@ -404,7 +410,8 @@ export const Navbar = () => {
             )}
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </nav>
