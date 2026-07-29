@@ -34,6 +34,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
   const { lang, t } = useLanguage();
   const mapContainerRef = useRef(null);
   const leafletMapInstance = useRef(null);
+  const lastFittedKeyRef = useRef(null);
 
   // List of shipments to display (Single vs All mode)
   const targetList = showAll && allShipments.length > 0 
@@ -53,14 +54,18 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
     const L = window.L;
     if (!L) return;
 
-    // Initialize or re-center Leaflet Map Instance
+    // Initialize Leaflet Map Instance with touch gestures enabled
     if (!leafletMapInstance.current) {
       const map = L.map(mapContainerRef.current, {
         center: [30, 20],
         zoom: 3,
         zoomControl: true,
-        minZoom: 2,
-        maxZoom: 18
+        minZoom: 1,
+        maxZoom: 18,
+        touchZoom: true,
+        doubleClickZoom: true,
+        scrollWheelZoom: true,
+        dragging: true
       });
 
       // CartoDB Voyager Tile Layer with MAP_API_KEY
@@ -157,10 +162,12 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       }).addTo(map);
     });
 
-    // Auto Fit Bounds with maxZoom: 6
-    if (allPoints.length > 0) {
+    // Smart Auto Fit Bounds: Call fitBounds ONLY when target shipment selection actually changes!
+    const currentKey = `${showAll ? 'all' : (currentShipment?.id || 'single')}_${targetList.length}`;
+    if (allPoints.length > 0 && lastFittedKeyRef.current !== currentKey) {
       const bounds = L.latLngBounds(allPoints);
-      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 6 });
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 6 });
+      lastFittedKeyRef.current = currentKey;
     }
 
   }, [targetList, showAll, onSelectShipment, lang]);
