@@ -744,6 +744,16 @@ footer {
     max-height: none !important;
   }
 
+  /* Responsive Navbar Rules */
+  .desktop-search-form,
+  .desktop-nav-links {
+    display: none !important;
+  }
+
+  .mobile-controls-group {
+    display: flex !important;
+  }
+
   .map-page-container {
     flex-direction: column;
     height: auto;
