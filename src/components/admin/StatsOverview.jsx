@@ -25,7 +25,7 @@ export const StatsOverview = () => {
   const completedCount = customerShipments.filter(s => s.status === 'COMPLETED').length;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+    <div className="stats-grid-container">
       <div className="glass-card" style={{ background: '#ffffff' }}>
         <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem', fontWeight: 600 }}>{t('statTotalCount')}</div>
         <div className="mono" style={{ fontSize: '2rem', fontWeight: 800, color: '#0f172a' }}>{totalCount}</div>

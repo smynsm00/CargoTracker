@@ -627,6 +627,14 @@ select.form-control {
   gap: 0.75rem;
 }
 
+/* Stats Overview Grid Container */
+.stats-grid-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
 /* Navbar & Footer */
 .navbar {
   display: flex;
@@ -749,6 +757,21 @@ footer {
     overflow-y: auto !important;
     height: auto !important;
     max-height: none !important;
+  }
+
+  /* 2x2 Grid Layout for Stats Cards on Mobile as requested */
+  .stats-grid-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .stats-grid-container .glass-card {
+    padding: 1.1rem 0.85rem !important;
+  }
+
+  .stats-grid-container .mono {
+    font-size: 1.6rem !important;
   }
 
   /* Force 1-column vertical stack for inputs on mobile */
