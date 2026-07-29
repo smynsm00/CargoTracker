@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Compass, Layers, Activity, TrendingUp } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 const MAP_API_KEY = '36b32457393a49d5ab826e667d74b5e6';
 
@@ -30,6 +31,7 @@ const CITY_COORDS = {
 const ROUTE_COLORS = ['#2563eb', '#e11d48', '#059669', '#d97706', '#8b5cf6'];
 
 export const MapView = ({ shipment, allShipments = [], showAll = false, onSelectShipment }) => {
+  const { lang, t } = useLanguage();
   const mapContainerRef = useRef(null);
   const leafletMapInstance = useRef(null);
 
@@ -116,19 +118,22 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
         iconAnchor: [17, 17]
       });
 
+      const originLabelText = lang === 'en' ? `${shp.tracking_number} Origin` : `${shp.tracking_number} 출발`;
+      const destLabelText = lang === 'en' ? `${shp.tracking_number} Destination` : `${shp.tracking_number} 도착`;
+
       // Origin Marker with Extended Width Shape
-      const originMarker = L.marker(originCoords, { icon: createCustomDivIcon(color, `${shp.tracking_number} 출발`) })
+      const originMarker = L.marker(originCoords, { icon: createCustomDivIcon(color, originLabelText) })
         .addTo(map)
-        .bindPopup(`<b>[${shp.tracking_number}] 출발지</b><br/>${originStr}`);
+        .bindPopup(`<b>[${shp.tracking_number}] Origin</b><br/>${originStr}`);
       
       originMarker.on('click', () => {
         if (onSelectShipment) onSelectShipment(shp);
       });
 
       // Destination Marker with Extended Width Shape
-      const destMarker = L.marker(destCoords, { icon: createCustomDivIcon('#0f172a', `${shp.tracking_number} 도착`) })
+      const destMarker = L.marker(destCoords, { icon: createCustomDivIcon('#0f172a', destLabelText) })
         .addTo(map)
-        .bindPopup(`<b>[${shp.tracking_number}] 목적지</b><br/>${destStr}`);
+        .bindPopup(`<b>[${shp.tracking_number}] Destination</b><br/>${destStr}`);
       
       destMarker.on('click', () => {
         if (onSelectShipment) onSelectShipment(shp);
@@ -137,7 +142,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       // Vehicle Marker
       const vesselMarker = L.marker([currentLat, currentLng], { icon: vesselDivIcon })
         .addTo(map)
-        .bindPopup(`<b>[${shp.tracking_number}] ${shp.carrier_name}</b><br/>상태: ${shp.status}<br/>진행률: ${progressPct}%`);
+        .bindPopup(`<b>[${shp.tracking_number}] ${shp.carrier_name}</b><br/>Status: ${shp.status}<br/>Progress: ${progressPct}%`);
 
       vesselMarker.on('click', () => {
         if (onSelectShipment) onSelectShipment(shp);
@@ -158,7 +163,7 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
       map.fitBounds(bounds, { padding: [60, 60], maxZoom: 6 });
     }
 
-  }, [targetList, showAll, onSelectShipment]);
+  }, [targetList, showAll, onSelectShipment, lang]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden', background: '#eef6ff' }}>
@@ -191,9 +196,9 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
             <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a' }}>
               {showAll ? (
-                `고객사 전체항로 통합 관제 (총 ${targetList.length}건)`
+                `${t('mapTitleAll')}${targetList.length}${t('mapTitleAllSuffix')}`
               ) : (
-                `[${currentShipment?.tracking_number || '선적건'}] 운송 진행률`
+                `[${currentShipment?.tracking_number || 'Shipment'}] ${t('mapTitleSingle')}`
               )}
             </span>
 
@@ -222,14 +227,14 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
               alignItems: 'center',
               gap: '0.2rem'
             }}>
-              {showAll ? `${avgProgress}% (평균)` : `${currentProgress}%`}
+              {showAll ? `${avgProgress}% (${t('mapAvgProgress')})` : `${currentProgress}%`}
             </span>
           </div>
         </div>
 
         {/* Section A: Copyright text placed at the VERY BOTTOM */}
         <div style={{ background: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(8px)', padding: '0.2rem 0.65rem', borderRadius: 'var(--radius-full)', fontSize: '0.68rem', color: '#64748b', border: '1px solid #e2e8f0', width: 'fit-content' }}>
-          © 2026 CargoTracker (React Edition). All rights reserved. 국제 운송 시각화 및 자동 알림 플랫폼.
+          {t('copyright')}
         </div>
 
       </div>

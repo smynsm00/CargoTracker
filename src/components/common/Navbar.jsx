@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useShipments } from '../../context/ShipmentContext';
-import { Zap, ShieldCheck, Search, LogOut, User, Map, ChevronDown } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
+import { Zap, ShieldCheck, Search, LogOut, User, Map, ChevronDown, Globe } from 'lucide-react';
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout } = useShipments();
+  const { lang, toggleLanguage, t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   const [navSearch, setNavSearch] = useState('');
@@ -22,8 +24,10 @@ export const Navbar = () => {
     logout();
   };
 
-  // Display customer_name (e.g. (주) 한진글로벌물류)
-  const customerDisplayName = user?.customer_name || user?.name || '(주) 한진글로벌물류';
+  // Display customer_name
+  const customerDisplayName = lang === 'en' 
+    ? (user?.customer_name === '(주) 한진글로벌물류' ? 'Hanjin Global Logistics Co., Ltd.' : (user?.customer_name || 'Hanjin Global Logistics'))
+    : (user?.customer_name || user?.name || '(주) 한진글로벌물류');
 
   return (
     <nav className="navbar" style={{ position: 'relative', zIndex: 100, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -36,11 +40,11 @@ export const Navbar = () => {
         </Link>
 
         {/* Search Bar */}
-        <form onSubmit={handleNavSearch} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#f1f5f9', padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-full)', border: '1px solid #cbd5e1', width: 280 }}>
+        <form onSubmit={handleNavSearch} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#f1f5f9', padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-full)', border: '1px solid #cbd5e1', width: 260 }}>
           <Search className="w-4 h-4 text-slate-500" />
           <input 
             type="text" 
-            placeholder="선적 번호 / 보안 토큰 검색..." 
+            placeholder={lang === 'en' ? "Tracking No. / Token..." : "선적 번호 / 보안 토큰 검색..."}
             value={navSearch}
             onChange={e => setNavSearch(e.target.value)}
             style={{ border: 'none', background: 'transparent', outline: 'none', fontSize: '0.8rem', width: '100%', color: '#0f172a' }}
@@ -48,22 +52,48 @@ export const Navbar = () => {
         </form>
       </div>
 
-      {/* Right Navigation Links */}
-      <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-        {/* Button A: Renamed to '전체항로맵' */}
+      {/* Right Navigation Links & Language Switcher */}
+      <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        
+        {/* Language Switcher Toggle Button (🇰🇷 KO ↔ 🇺🇸 EN) */}
+        <button
+          type="button"
+          onClick={toggleLanguage}
+          title={lang === 'ko' ? "Switch to English Version" : "한국어 버전으로 전환"}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.35rem',
+            background: '#f8fafc',
+            border: '1.5px solid #cbd5e1',
+            padding: '0.35rem 0.65rem',
+            borderRadius: 'var(--radius-full)',
+            fontSize: '0.8rem',
+            fontWeight: 800,
+            color: '#1e293b',
+            cursor: 'pointer',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+            transition: 'all 0.2s ease'
+          }}
+        >
+          <Globe className="w-4 h-4 text-blue-600" />
+          <span>{lang === 'ko' ? '🇺🇸 ENG' : '🇰🇷 KOR'}</span>
+        </button>
+
+        {/* Button: Global Route Map */}
         <Link 
           to="/map?all=true" 
           className={`nav-link ${location.pathname === '/map' && location.search.includes('all=true') ? 'active' : ''}`} 
           style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }}
         >
           <Map className="w-4 h-4 text-blue-600" />
-          전체항로맵
+          {t('navMap')}
         </Link>
 
-        {/* Button: 운송현황관리 */}
+        {/* Button: Shipment Control Panel */}
         <Link to="/" className="btn-primary" style={{ padding: '0.45rem 0.85rem', fontSize: '0.85rem' }}>
           <ShieldCheck className="w-4 h-4" />
-          운송현황관리
+          {t('navDashboard')}
         </Link>
 
         {/* Customer Name Dropdown Button */}
@@ -129,7 +159,7 @@ export const Navbar = () => {
                   onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                 >
                   <LogOut className="w-4 h-4 text-rose-600" />
-                  로그아웃
+                  {t('navLogout')}
                 </button>
               </div>
             )}
