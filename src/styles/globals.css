@@ -620,6 +620,13 @@ select.form-control {
   border-color: var(--status-danger);
 }
 
+/* Form 2-Column Responsive Grid */
+.form-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
 /* Navbar & Footer */
 .navbar {
   display: flex;
@@ -742,6 +749,12 @@ footer {
     overflow-y: auto !important;
     height: auto !important;
     max-height: none !important;
+  }
+
+  /* Force 1-column vertical stack for inputs on mobile */
+  .form-grid-2col {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
   }
 
   /* Hide floating copyright text box on mobile */

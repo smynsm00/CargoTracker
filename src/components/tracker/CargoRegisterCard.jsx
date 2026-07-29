@@ -157,8 +157,8 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
       {/* 20px exact spacing between sections A, B, C, D */}
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         
-        {/* Section A: Cargo ID & Transport Mode */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+        {/* Section A: Cargo ID & Transport Mode (100% 1-column on mobile, 2-column on desktop) */}
+        <div className="form-grid-2col">
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.25rem' }}>
               <Tag className="w-3.5 h-3.5 text-amber-600" />
@@ -170,7 +170,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
               placeholder={t('cargoIdPlaceholder')}
               value={formData.cargo_id}
               onChange={e => setFormData({ ...formData, cargo_id: e.target.value })}
-              style={{ padding: '0.45rem 0.65rem', fontSize: '0.82rem' }}
+              style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', width: '100%' }}
               required
             />
           </div>
@@ -184,7 +184,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
               className="form-control" 
               value={formData.transport_mode}
               onChange={e => setFormData({ ...formData, transport_mode: e.target.value })}
-              style={{ padding: '0.45rem 0.65rem', fontSize: '0.82rem' }}
+              style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', width: '100%' }}
               required
             >
               <option value="SEA">{t('modeSea')}</option>
@@ -193,8 +193,8 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
           </div>
         </div>
 
-        {/* Section B: Origin & Destination */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+        {/* Section B: Origin & Destination (100% 1-column on mobile, 2-column on desktop) */}
+        <div className="form-grid-2col">
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#334155', fontSize: '0.78rem', fontWeight: 700, marginBottom: '0.25rem' }}>
               <MapPin className="w-3.5 h-3.5 text-rose-600" />
@@ -206,7 +206,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
               placeholder={t('originPlaceholder')}
               value={formData.origin}
               onChange={e => setFormData({ ...formData, origin: e.target.value })}
-              style={{ padding: '0.45rem 0.65rem', fontSize: '0.82rem' }}
+              style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', width: '100%' }}
               required
             />
           </div>
@@ -222,7 +222,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
               placeholder={t('destinationPlaceholder')}
               value={formData.destination}
               onChange={e => setFormData({ ...formData, destination: e.target.value })}
-              style={{ padding: '0.45rem 0.65rem', fontSize: '0.82rem' }}
+              style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', width: '100%' }}
               required
             />
           </div>
@@ -240,7 +240,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
               className="form-control" 
               value={formData.original_eta}
               onChange={e => setFormData({ ...formData, original_eta: e.target.value })}
-              style={{ padding: '0.45rem 0.65rem', fontSize: '0.82rem' }}
+              style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem', width: '100%' }}
               required
             />
           </div>
@@ -313,7 +313,7 @@ export const CargoRegisterCard = ({ selectedShipment, onSelectShipment }) => {
             className="btn-primary" 
             style={{ 
               width: '100%', 
-              justify: 'center', 
+              justifyContent: 'center', 
               padding: '0.7rem 1rem', 
               fontSize: '0.9rem', 
               fontWeight: 800, 
