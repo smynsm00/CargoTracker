@@ -744,6 +744,11 @@ footer {
     max-height: none !important;
   }
 
+  /* Hide floating copyright text box on mobile */
+  .map-copyright-box {
+    display: none !important;
+  }
+
   /* Responsive Navbar Rules */
   .desktop-search-form,
   .desktop-nav-links {

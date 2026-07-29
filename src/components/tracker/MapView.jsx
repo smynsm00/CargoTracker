@@ -239,8 +239,8 @@ export const MapView = ({ shipment, allShipments = [], showAll = false, onSelect
           </div>
         </div>
 
-        {/* Section A: Copyright text placed at the VERY BOTTOM */}
-        <div style={{ background: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(8px)', padding: '0.2rem 0.65rem', borderRadius: 'var(--radius-full)', fontSize: '0.68rem', color: '#64748b', border: '1px solid #e2e8f0', width: 'fit-content' }}>
+        {/* Section A: Copyright text placed at the VERY BOTTOM (Hidden on mobile via .map-copyright-box class) */}
+        <div className="map-copyright-box" style={{ background: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(8px)', padding: '0.2rem 0.65rem', borderRadius: 'var(--radius-full)', fontSize: '0.68rem', color: '#64748b', border: '1px solid #e2e8f0', width: 'fit-content' }}>
           {t('copyright')}
         </div>
 
