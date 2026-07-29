@@ -23,7 +23,7 @@ export const MapViewPage = () => {
   const [showAllMode, setShowAllMode] = useState(isAllParam || (!token && !trackingNo));
 
   useEffect(() => {
-    // Add class to body to disable outer window scrollbars on map view
+    // Add class to body to handle map view layout
     document.body.classList.add('map-view-active');
     return () => {
       document.body.classList.remove('map-view-active');
@@ -51,17 +51,9 @@ export const MapViewPage = () => {
   };
 
   return (
-    <main style={{ 
-      display: 'flex', 
-      width: '100%', 
-      height: 'calc(100vh - 64px)', 
-      maxHeight: 'calc(100vh - 64px)',
-      overflow: 'hidden', 
-      background: '#eef6ff',
-      boxSizing: 'border-box'
-    }}>
-      {/* Area A: 70% Width Interactive Map Component */}
-      <div style={{ width: '70%', height: '100%', overflow: 'hidden', position: 'relative', flexShrink: 0 }}>
+    <main className="map-page-container">
+      {/* Area A: Interactive Map Component (70% Desktop / 100% Mobile) */}
+      <div className="map-area-container">
         <MapView 
           shipment={selectedShipment} 
           allShipments={customerShipments}
@@ -70,8 +62,8 @@ export const MapViewPage = () => {
         />
       </div>
 
-      {/* Area B: 30% Width Cargo Form & Details Panel (Zero Scrollbar) */}
-      <div style={{ width: '30%', height: '100%', overflow: 'hidden', background: '#ffffff', borderLeft: '1px solid #cbd5e1', boxShadow: '-5px 0 20px rgba(0,0,0,0.03)', boxSizing: 'border-box', flexShrink: 0 }}>
+      {/* Area B: Cargo Form & AI Risk Details Panel (30% Desktop / 100% Mobile Stack) */}
+      <div className="panel-area-container">
         <CargoRegisterCard 
           selectedShipment={selectedShipment}
           onSelectShipment={(newShp) => {

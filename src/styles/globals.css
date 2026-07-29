@@ -705,30 +705,107 @@ footer {
   margin-top: 0.75rem;
 }
 
-@media (max-width: 768px) {
-  .navbar {
-    padding: 1rem;
+/* Responsive Map Page Layout */
+.map-page-container {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+  overflow: hidden;
+  background: #eef6ff;
+  box-sizing: border-box;
+}
+
+.map-area-container {
+  width: 70%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.panel-area-container {
+  width: 30%;
+  height: 100%;
+  overflow-y: auto;
+  background: #ffffff;
+  border-left: 1px solid #cbd5e1;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.03);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* Mobile & Tablet Responsive Media Queries (< 1024px) */
+@media (max-width: 1023px) {
+  body.map-view-active,
+  body.map-view-active #root {
+    overflow-y: auto !important;
+    height: auto !important;
+    max-height: none !important;
   }
+
+  .map-page-container {
+    flex-direction: column;
+    height: auto;
+    max-height: none;
+    overflow-y: auto;
+  }
+
+  .map-area-container {
+    width: 100%;
+    height: 380px;
+    min-height: 350px;
+  }
+
+  .panel-area-container {
+    width: 100%;
+    height: auto;
+    border-left: none;
+    border-top: 1px solid #cbd5e1;
+  }
+
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
   .tracker-visual-container {
     padding: 1.25rem;
   }
+
   .route-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
+
   .location-box.destination {
     text-align: left;
   }
+
+  /* Prevent iOS Safari Automatic Zoom on Focus (Min 16px Font) */
+  .form-control,
+  input[type="text"],
+  input[type="date"],
+  select.form-control {
+    font-size: 16px !important;
+  }
+
+  /* Touch Target Area Optimization (Min 44px) */
+  .btn-primary,
+  .btn-secondary {
+    min-height: 44px;
+    font-size: 0.95rem;
+  }
 }
 
-/* Zero Scrollbar Rule for Map View */
-body.map-view-active,
-body.map-view-active #root {
-  overflow: hidden !important;
-  height: 100vh !important;
-  max-height: 100vh !important;
-  width: 100vw !important;
-  max-width: 100vw !important;
+/* Zero Scrollbar Rule for Desktop Map View */
+@media (min-width: 1024px) {
+  body.map-view-active,
+  body.map-view-active #root {
+    overflow: hidden !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+  }
 }
-
