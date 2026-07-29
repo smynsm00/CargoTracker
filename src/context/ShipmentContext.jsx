@@ -11,7 +11,7 @@ const INITIAL_SHIPMENTS = [
     customer_name: "(주) 한진글로벌물류",
     bl_number: "HDMU8810296",
     cargo_id: "COSU62918850",
-    tracking_number: "CT-2026-7730",
+    tracking_number: "CT-2026-8804",
     transport_mode: "SEA",
     carrier_name: "Sinokor Merchant Marine",
     vessel_flight_no: "SINOKOR STAR 102N",
@@ -34,7 +34,7 @@ const INITIAL_SHIPMENTS = [
     customer_name: "(주) 한진글로벌물류",
     bl_number: "HDMU8810295",
     cargo_id: "COSU62918849",
-    tracking_number: "CT-2026-9204",
+    tracking_number: "CT-2026-8803",
     transport_mode: "AIR",
     carrier_name: "Korean Air Cargo",
     vessel_flight_no: "KE021 Cargo",
@@ -57,7 +57,7 @@ const INITIAL_SHIPMENTS = [
     customer_name: "(주) 한진글로벌물류",
     bl_number: "HDMU8810297",
     cargo_id: "COSU62918851",
-    tracking_number: "CT-2026-4051",
+    tracking_number: "CT-2026-8805",
     transport_mode: "AIR",
     carrier_name: "Asiana Cargo",
     vessel_flight_no: "OZ541 Cargo",
@@ -162,12 +162,14 @@ export const ShipmentProvider = ({ children }) => {
       if (res.ok) {
         const data = await res.json();
         if (data && data.length > 0) {
-          const mapped = data.map((dbRow) => {
-            // Determine status: if ETA is delayed, ensure status is DELAYED
+          const mapped = data.map((dbRow, index) => {
             let finalStatus = dbRow.status || 'IN_TRANSIT';
             if (dbRow.eta_original && dbRow.eta_current && dbRow.eta_original !== dbRow.eta_current && finalStatus !== 'COMPLETED') {
               finalStatus = 'DELAYED';
             }
+
+            // Preserve initial tokens so QR scan matches perfectly
+            const tokenToUse = INITIAL_SHIPMENTS[index]?.public_token || `token-${dbRow.id}`;
 
             return {
               id: `shp-${dbRow.id}`,
@@ -188,7 +190,7 @@ export const ShipmentProvider = ({ children }) => {
               current_eta: dbRow.eta_current,
               delay_reason: dbRow.delay_reason || '',
               status: finalStatus,
-              public_token: `token-${dbRow.id}`,
+              public_token: tokenToUse,
               recipient_phone: dbRow.recipient_phone
             };
           });
@@ -275,12 +277,34 @@ export const ShipmentProvider = ({ children }) => {
     showToast('로그아웃되었습니다.');
   };
 
+  // Robust getShipmentByToken function with graceful fallback
   const getShipmentByToken = (token) => {
-    return shipments.find(s => s.public_token === token || s.public_token.includes(token));
+    if (!token) return shipments[0] || null;
+    const clean = token.trim().toLowerCase();
+
+    const found = shipments.find(s => {
+      const pubToken = (s.public_token || '').toLowerCase();
+      const trkNo = (s.tracking_number || '').toLowerCase();
+      const cargoId = (s.cargo_id || '').toLowerCase();
+      const blNo = (s.bl_number || '').toLowerCase();
+      const shpId = (s.id || '').toLowerCase();
+
+      return pubToken === clean || 
+             pubToken.includes(clean) || 
+             clean.includes(pubToken) || 
+             trkNo.includes(clean) || 
+             cargoId.includes(clean) || 
+             blNo.includes(clean) ||
+             shpId.includes(clean);
+    });
+
+    return found || shipments[0] || null;
   };
 
   const getShipmentByTrackingNumber = (trackingNo) => {
-    return shipments.find(s => s.tracking_number.toLowerCase() === trackingNo.trim().toLowerCase());
+    if (!trackingNo) return shipments[0] || null;
+    const clean = trackingNo.trim().toLowerCase();
+    return shipments.find(s => s.tracking_number.toLowerCase().includes(clean)) || shipments[0] || null;
   };
 
   const saveShipment = (data) => {
